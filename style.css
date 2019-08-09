@@ -1,0 +1,42 @@
+:root {
+  --white: white;
+  --black: black;
+  --white-figures: rgba(255, 255, 255, 0.8);
+  --black-figures: rgba(0, 0, 0, 0.7);
+}
+
+html {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.board {
+  position: relative;
+  display: grid;
+  grid-template-rows: repeat(8, 1fr);
+  grid-template-columns: repeat(8, 1fr);
+  min-width: 80vh;
+  min-height: 80vh;
+  border: 1px solid var(--black);
+}
+
+.square {
+  width: 10vh;
+  height: 10vh;
+  text-align: center;
+  line-height: 10vh;
+  font-size: 7.5vh;
+  border: 1px solid var(--black);
+}
+
+.dark {
+  background-color: var(--black);
+}
