@@ -1,3 +1,7 @@
-import setup from "./setup";
+import Game from "./Game";
 
-setup();
+// w tym pliku prawdopodobnie będzie tylko inicjalizacja gry
+
+const game = new Game();
+
+game.setup.createSquares();

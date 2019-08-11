@@ -6,10 +6,10 @@ class Pawn extends Piece {
     this.name = "pawn";
     this.display = `<i class="fas fa-chess-pawn ${side}"></i>`;
   }
+
+  // główna metoda, w której trzeba zapisać wszystkie możliwe ruchy danej bierki.
   findLegalMoves() {
-    //console.log(this.x, this.y);
     const possibleMoves = [];
-    // console.log(possibleMoves);
 
     return posiblesMoves;
   }
