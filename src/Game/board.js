@@ -6,17 +6,28 @@ import Knight from "./pieces/knight"
 class Board extends Array {
   createSecondLevel() {
     for (let i = 0; i < 8; i++) {
-      board[i] = new Array(8);
+      this[i] = new Array(8);
     }
+  }
+
+  createAndSetPawns(side) {
+    const row = (side === 'white') ? 1 : 6;
+    for(let i = 0; i < this[row].length; i++ ) {
+      this[row][i] = new Pawn(row, i, side);
+    }
+  }
+
+  init() {
+    this.createSecondLevel();
+    this.createAndSetPawns('white');
+    this.createAndSetPawns('black');
   }
 }
 
 const board = new Board(8);
-board.createSecondLevel();
+board.init();
 
 // tutaj tworzycie nowe obiekty waszych bierek i od razu umieszczacie je na szachownicy
-let pawn = new Pawn(6, 0, "white");
-board[pawn._x][pawn._y] = pawn;
 
 let knight_w1 = new Knight(7, 1, "white");
 board[knight_w1._x][knight_w1._y] = knight_w1;
