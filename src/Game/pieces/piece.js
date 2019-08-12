@@ -6,7 +6,6 @@ class Piece {
   constructor(x, y, side) {
     this._x = x;
     this._y = y;
-
     this._side = side; //'black' or 'white'
   }
   move([newX, newY]) {
