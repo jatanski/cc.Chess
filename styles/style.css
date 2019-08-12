@@ -1,6 +1,7 @@
 :root {
   --white: white;
   --black: black;
+  --highlighted: orange;
   --white-figures: rgba(255, 255, 255, 0.8);
   --black-figures: rgba(0, 0, 0, 0.7);
 }
@@ -29,14 +30,28 @@ html {
 }
 
 .square {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 10vh;
   height: 10vh;
   text-align: center;
   line-height: 10vh;
-  font-size: 7.5vh;
+  font-size: 2vh;
   border: 1px solid var(--black);
+  color: var(--black-figures);
+  cursor: pointer;
+  transition: background-color 1s;
 }
 
+.square .fas {
+  font-size: 6.5vh;
+}
 .dark {
+  color: var(--white-figures);
   background-color: var(--black);
+}
+
+.highlighted {
+  background-color: var(--highlighted);
 }
