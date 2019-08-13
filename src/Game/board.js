@@ -48,10 +48,6 @@ board[bishop_b1._x][bishop_b1._y] = bishop_b1;
 let bishop_b2 = new Bishop(0, 5, 'black');
 board[bishop_b2._x][bishop_b2._y] = bishop_b2;
 
-bishop_b1.findLegalMoves();
-bishop_b2.findLegalMoves();
-bishop_w1.findLegalMoves();
-bishop_w2.findLegalMoves();
 console.log(board); // służy do podejrzenia tablicy w konsoli
 
 export default board;
