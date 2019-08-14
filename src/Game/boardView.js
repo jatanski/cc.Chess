@@ -50,7 +50,17 @@ export default class BoardView {
             this.highlightSquares(position);
             this.prevElement = position;
 
-            
+            let className;
+            if(el.nodeName == "I")
+                className = el.classList[1];
+            else
+                className = el.childNodes[0].classList[1];
+
+            if(className === 'fa-chess-pawn') {
+
+            }else if(className === 'fa-chess-knight') {
+
+            }
         }
     }
 
