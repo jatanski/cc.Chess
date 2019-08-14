@@ -1,5 +1,6 @@
 import Pawn from "./pieces/pawn";
 import Knight from "./pieces/knight"
+import King from "./pieces/king";
 
 // klasa inicjująca tablicę, gdzie będą zapisywane pozycje bierek
 
@@ -37,6 +38,10 @@ let knight_b1 = new Knight(0, 1, "black");
 board[knight_b1._x][knight_b1._y] = knight_b1;
 let knight_b2 = new Knight(0, 6, "black");
 board[knight_b2._x][knight_b2._y] = knight_b2;
+let king_w1 = new King(7,4, "white");
+board[king_w1._x][king_w1._y] = king_w1;
+let king_b1 = new King(0,4, "black");
+board[king_b1._x][king_b1._y] = king_b1;
 
 console.log(board); // służy do podejrzenia tablicy w konsoli
 
