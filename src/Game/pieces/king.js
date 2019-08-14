@@ -14,10 +14,10 @@ class King extends Piece {
 
     //aktualna pozycja
     const cord = [x,y];
-    
+    const possibleMoves = [];
     //tworzy tablice wektorow x,y z mozliwymi rozwiazaniami (zaczyna od lewego, gornego rogu)
-    for (i = (cord[0]-1); i<(cord[0]+2); i++){
-        for (j = (cord[1]-1); j<(cord[1]+2); j++){
+    for (const i = (cord[0]-1); i<(cord[0]+2); i++){
+        for (const j = (cord[1]-1); j<(cord[1]+2); j++){
             //sprawdza czy poza plansza (x>=0, xM=7, y>=0, x<=7) oraz usuwa z listy mozliwych ruchow pole, na ktorym aktualnie stoi
             if (((i<=7 && i>=0) && (j<=7 && j>=0)) && !(i==cord[0] && j==cord[1])) {
                 possibleMoves.push([i,j])
