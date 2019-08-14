@@ -20,19 +20,6 @@ export default class BoardView {
 
   _setListeners() {
     this._boardElement.addEventListener("click", ev => {
-      const position = ev.target
-        .closest(".square")
-        .dataset.id.split("-")
-        .map(el => {
-          return +el;
-        });
-      console.log(position);
-      return position;
-    });
-  }
-
-  _setListeners() {
-    this._boardElement.addEventListener("click", ev => {
       if (this.prevElement) this.removeHighlight(this.prevElement);
       const position = ev.target
         .closest(".square")
@@ -163,7 +150,7 @@ export default class BoardView {
   init() {
     this._displayPieces();
     this._setListeners();
-    this.tests();
+    // this.tests();
 
     this._setListenersToSquare();
   }
