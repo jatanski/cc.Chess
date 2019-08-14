@@ -1,5 +1,5 @@
 import board from "./board";
-import BoardView from './boardView';
+import BoardView from "./boardView";
 // klasa tworząca interfejs aplikacji
 
 class Setup {
@@ -11,6 +11,8 @@ class Setup {
       for (let y = 0; y < board[x].length; y++) {
         const square = document.createElement("div");
         square.dataset.id = `${x}-${y}`;
+        square.dataset.x = `${x}`;
+        square.dataset.y = `${y}`;
         square.innerHTML = `${x}, ${y}`; // by lepiej widzieć indeksy
         square.className += x % 2 == y % 2 ? "light" : "dark";
         square.classList.add("square");
@@ -23,7 +25,6 @@ class Setup {
     this.view = new BoardView(this.boardElement);
     this.view.init();
   }
-  
 }
 
 export default Setup;
