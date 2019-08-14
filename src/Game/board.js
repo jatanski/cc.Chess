@@ -59,7 +59,7 @@ class Board extends Array {
 
   createAndSetRook(side) {
     const row = side === "white" ? 7 : 0;
-    const startPositionBishop = [0, 7];
+    const startPositionRook = [0, 7];
     for (let i = 0; i < startPositionRook.length; i++) {
       this[row][startPositionRook[i]] = new Rook(
         row,
@@ -67,10 +67,7 @@ class Board extends Array {
         side
       );
     }
-
-  };
-
-  
+  }
 
   // metoda inicjująca
 
@@ -85,10 +82,10 @@ class Board extends Array {
       this.createAndSetKing(colors[i]);
       this.createAndSetKnight(colors[i]);
       this.createAndSetBishop(colors[i]);
+      this.createAndSetRook(colors[i]);
     }
   }
 }
-
 
 const board = new Board(8);
 board.init();
