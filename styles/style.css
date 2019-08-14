@@ -1,8 +1,8 @@
 :root {
-  --white: white;
-  --black: black;
+  --white: rgb(201, 201, 161, 0.7);
+  --black: rgb(120, 158, 83);
   --highlighted: orange;
-  --white-figures: rgba(255, 255, 255, 0.8);
+  --white-figures: rgba(255, 255, 255);
   --black-figures: rgba(0, 0, 0, 0.7);
 }
 
@@ -38,20 +38,26 @@ html {
   text-align: center;
   line-height: 10vh;
   font-size: 2vh;
-  border: 1px solid var(--black);
-  color: var(--black-figures);
   cursor: pointer;
   transition: background-color 1s;
+  background-color: var(--white);
 }
 
 .square .fas {
   font-size: 6.5vh;
 }
 .dark {
-  color: var(--white-figures);
   background-color: var(--black);
 }
 
 .highlighted {
   background-color: var(--highlighted);
+}
+
+.black {
+  color: var(--black-figures);
+}
+
+.white {
+  color: var(--white-figures);
 }
