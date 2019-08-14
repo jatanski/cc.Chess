@@ -1,7 +1,9 @@
 import board from "./board";
 
 export default class BoardView {
+
     constructor(boardElement) {
+        this.prevElement = null;
         this._boardElement = boardElement;
         this._squares = this._boardElement.querySelectorAll('.square');
     }
@@ -17,10 +19,13 @@ export default class BoardView {
 
     _setListeners() {
         this._boardElement.addEventListener('click', (ev) => {
+            if(this.prevElement)
+                this.removeHighlight(this.prevElement);
             const position = ev.target.closest('.square').dataset.id.split('-').map(el => {
                 return +el;
             });
             console.log(position);
+            this.displayMoves(position, ev.target);
             return position;
         })
     }
@@ -38,6 +43,15 @@ export default class BoardView {
         this._boardElement.querySelectorAll('.highlighted').forEach(el => {
             el.classList.remove('highlighted');
         });
+    }
+
+    displayMoves(position ,el) {
+        if(el.nodeName == "I" || el.children.length > 0) {
+            this.highlightSquares(position);
+            this.prevElement = position;
+
+            
+        }
     }
 
     tests() {
