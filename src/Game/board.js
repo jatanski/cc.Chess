@@ -1,6 +1,8 @@
 import Pawn from "./pieces/pawn";
+
 import Knight from "./pieces/knight";
 import Queen from "./pieces/queen";
+import Bishop from "./pieces/bishop"
 
 // klasa inicjująca tablicę, gdzie będą zapisywane pozycje bierek
 
@@ -42,6 +44,15 @@ let queen_w1 = new Queen(7, 3, "white");
 board[queen_w1._x][queen_w1._y] = queen_w1;
 let queen_b1 = new Queen(0, 3, "black");
 board[queen_b1._x][queen_b1._y] = queen_b1;
+
+let bishop_w1 = new Bishop(7, 2, 'white');
+board[bishop_w1._x][bishop_w1._y] = bishop_w1;
+let bishop_w2 = new Bishop(7, 5, 'white');
+board[bishop_w2._x][bishop_w2._y] = bishop_w2;
+let bishop_b1 = new Bishop(0, 2, 'black');
+board[bishop_b1._x][bishop_b1._y] = bishop_b1;
+let bishop_b2 = new Bishop(0, 5, 'black');
+board[bishop_b2._x][bishop_b2._y] = bishop_b2;
 
 console.log(board); // służy do podejrzenia tablicy w konsoli
 
