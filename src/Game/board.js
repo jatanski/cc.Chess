@@ -3,6 +3,7 @@ import Knight from "./pieces/knight";
 import Queen from "./pieces/queen";
 import Bishop from "./pieces/bishop";
 import King from "./pieces/king";
+import Rook from "./pieces/rook";
 
 // klasa inicjująca tablicę, gdzie będą zapisywane pozycje bierek
 
@@ -56,6 +57,21 @@ class Board extends Array {
     }
   }
 
+  createAndSetRook(side) {
+    const row = side === "white" ? 7 : 0;
+    const startPositionBishop = [0, 7];
+    for (let i = 0; i < startPositionRook.length; i++) {
+      this[row][startPositionRook[i]] = new Rook(
+        row,
+        startPositionRook[i],
+        side
+      );
+    }
+
+  };
+
+  
+
   // metoda inicjująca
 
   init() {
@@ -72,6 +88,7 @@ class Board extends Array {
     }
   }
 }
+
 
 const board = new Board(8);
 board.init();
