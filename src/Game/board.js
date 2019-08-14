@@ -46,7 +46,7 @@ class Board extends Array {
 
   createAndSetBishop(side) {
     const row = side === "white" ? 7 : 0;
-    const startPositionBishop = [2, 6];
+    const startPositionBishop = [2, 5];
     for (let i = 0; i < startPositionBishop.length; i++) {
       this[row][startPositionBishop[i]] = new Bishop(
         row,
