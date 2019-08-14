@@ -1,10 +1,11 @@
 import board from "./board";
 
 export default class BoardView {
-  constructor(boardElement) {
-    this._boardElement = boardElement;
-    this._squares = this._boardElement.querySelectorAll(".square");
-  }
+    constructor(boardElement) {
+        this.prevElement = null;
+        this._boardElement = boardElement;
+        this._squares = this._boardElement.querySelectorAll('.square');
+    }
 
   _displayPieces() {
     // Iterujemy po wszystkich elementach (empty jest pomijany w iteracji) w tablicy board
@@ -30,6 +31,18 @@ export default class BoardView {
     });
   }
 
+    _setListeners() {
+        this._boardElement.addEventListener('click', (ev) => {
+            if(this.prevElement)
+                this.removeHighlight(this.prevElement);
+            const position = ev.target.closest('.square').dataset.id.split('-').map(el => {
+                return +el;
+            });
+            console.log(position);
+            this.displayMoves(position, ev.target);
+            return position;
+        })
+    }
   _setListenersToSquare() {
     const squares = Array.from(this._boardElement.children);
     squares.forEach(square => {
@@ -91,12 +104,38 @@ export default class BoardView {
   }
 
   // zmienia typ z string na number
-
   _getPostionFromSquare(square) {
     const positionX = parseInt(square.dataset.x);
     const positionY = parseInt(square.dataset.y);
     return [positionX, positionY];
   }
+
+    displayMoves(position ,el) {
+        if(el.nodeName == "I" || el.children.length > 0) {
+            this.highlightSquares(position);
+            this.prevElement = position;
+
+            let className;
+            if(el.nodeName == "I")
+                className = el.classList[1];
+            else
+                className = el.childNodes[0].classList[1];
+
+            if(className === 'fa-chess-pawn') {
+
+            }else if(className === 'fa-chess-knight') {
+
+            }
+        }
+    }
+
+    tests() {
+        this.highlightSquares([1, 1], [1, 2]);
+        this.highlightSquares(1,3);
+        setTimeout(() => {
+            this.removeHighlight();
+        }, 2000);
+    }
 
   highlightSquares(...squares) {
     if (!(squares[0] instanceof Array)) {
