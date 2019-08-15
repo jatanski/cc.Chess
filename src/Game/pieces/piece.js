@@ -29,7 +29,7 @@ class Piece {
     ).innerHTML = this.display;
 
     //zmienia flage bierki po pierwszym ruchu
-    if(this.pristine) this.pristine = false;
+    if(this._pristine) this._pristine = false;
 
     console.log(board);
   }

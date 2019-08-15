@@ -7,7 +7,6 @@ class Pawn extends Piece {
         this.name = "pawn";
         this.display = `<i data-color=${side} class="fas fa-chess-pawn ${side}"></i>`;
         this._vector = this._side == "white" ? -1 : 1; // 1 to góra -1 to dół
-        this.pristine = true; // true tylko jeżeli na pozycji startowej
     }
 
     // Filtrowanie ruchów wykraczających poza szachownice
@@ -38,7 +37,7 @@ class Pawn extends Piece {
         return legalMoves;
     }
 
-    filterSelfAttacs(possibleMovesArray, board) {
+    filterSelfAttacs(possibleMoves, board) {
 
     }
 
@@ -48,7 +47,7 @@ class Pawn extends Piece {
         const allMoves = Array([this._x + this._vector, this._y]);
 
         // Dla pierwszego ruchu możliwość ruchu o 2
-        if(this.pristine) {
+        if(this._pristine) {
             allMoves.push([this._x + (this._vector * 2), this._y]) 
         }
 
