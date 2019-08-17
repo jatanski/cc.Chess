@@ -3,6 +3,7 @@ import board from "./board";
 export default class BoardView {
   constructor(boardElement) {
     this.prevElement = null;
+    this.currentRound = 'white';
     this._boardElement = boardElement;
     this._squares = this._boardElement.querySelectorAll(".square");
   }
@@ -68,7 +69,7 @@ export default class BoardView {
 
     let legalMovesArray = sessionStorage.getItem("legalMoves");
     legalMovesArray = JSON.parse(legalMovesArray);
-    
+
 
     let startPosition = sessionStorage.getItem("positionFigure");
     startPosition = JSON.parse(startPosition);
@@ -82,7 +83,7 @@ export default class BoardView {
         console.log("poruszam się");
         board.forEach(row => {
           row.forEach(piece => {
-            if (piece)
+            if (piece && piece._side === this.currentRound)
               if (
                 piece._x === startPosition[0] &&
                 piece._y === startPosition[1]
@@ -90,6 +91,7 @@ export default class BoardView {
                 piece.move(newPosition);
                 sessionStorage.removeItem("legalMoves");
                 sessionStorage.removeItem("positionFigure");
+                this.currentRound = this.currentRound === 'white' ? 'black':'white';
               }
           });
         });
@@ -105,10 +107,15 @@ export default class BoardView {
   }
 
   displayMoves(position, el) {
-    if (el.nodeName == "I" || el.children.length > 0) {
+    let figure = null;
+    if(el.nodeName == "I")
+      figure = el;
+    else
+      figure = el.childNodes[0];
+
+    if (figure.classList && figure.classList.contains(this.currentRound)) {
       this.highlightSquares(position);
       this.prevElement = position;
-      
       board[position[0]][position[1]].findLegalMoves().forEach(p => this.highlightSquares(p));
     }
   }
