@@ -63,11 +63,16 @@ export default class BoardView {
   //próbuje wykonać ruch, jeżeli klinięte wole jest wśród legalnych posunięć to wykonuje ruch
   _tryMove(square) {
     const newPosition = this._getPostionFromSquare(square);
+
+    if(!sessionStorage.getItem("legalMoves")) return;
+
     let legalMovesArray = sessionStorage.getItem("legalMoves");
     legalMovesArray = JSON.parse(legalMovesArray);
+    
 
     let startPosition = sessionStorage.getItem("positionFigure");
     startPosition = JSON.parse(startPosition);
+
 
     legalMovesArray.forEach(legalMoves => {
       if (

@@ -6,6 +6,7 @@ class Piece {
   constructor(x, y, side) {
     this._x = x;
     this._y = y;
+    this._pristine = true;
     this._side = side; //'black' or 'white'
   }
   move(newPosition) {
@@ -26,6 +27,9 @@ class Piece {
     document.querySelector(
       `[data-id="${newX}-${newY}"]`
     ).innerHTML = this.display;
+
+    //zmienia flage bierki po pierwszym ruchu
+    if(this._pristine) this._pristine = false;
 
     console.log(board);
   }
