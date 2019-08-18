@@ -22,14 +22,6 @@ class Bishop extends Piece {
 
 
 
-    findSkips(possibleMoves, x, y, board) {
-        let legalMoves = [];
-
-        for (let i = 1; i < 8; i++){
-            
-        }
-
-    }
     // metoda zwracająca tablicę możliwych ruchów dla bierki 
     findLegalMoves(board) {
             const allMoves = Array([this._x , this._y]);
@@ -49,9 +41,7 @@ class Bishop extends Piece {
         const possibleMove = allMoves.filter((n) => {
             return (n[0] >= 0 && n[0] <= 7 && n[1] >= 0 && n[1] <= 7);
         })
-        console.log(possibleMove);
         moves = this.checkCollision(possibleMove, board);
-        console.log(moves);
         return moves;
     }
 
