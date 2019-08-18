@@ -7,9 +7,25 @@ class Bishop extends Piece {
         this.display = `<i class="fas fa-chess-bishop ${side}"></i>`
     }
 
+    
+
+    checkCollision(possibleMoves, board) {
+        let legalMoves = [];
+        for (let move of possibleMoves) {
+            if (!board[move[0]][move[1]]) {
+                legalMoves.push(move);
+            }
+        }
+       
+        return legalMoves;
+    }
+
+
+
     // metoda zwracająca tablicę możliwych ruchów dla bierki 
-    findLegalMoves() {
-        const allMoves = [];
+    findLegalMoves(board) {
+            const allMoves = Array([this._x , this._y]);
+        let moves = [];
         const x = this._x
         const y = this._y;
 
@@ -25,9 +41,11 @@ class Bishop extends Piece {
         const possibleMove = allMoves.filter((n) => {
             return (n[0] >= 0 && n[0] <= 7 && n[1] >= 0 && n[1] <= 7);
         })
-
-        return possibleMove;
+        moves = this.checkCollision(possibleMove, board);
+        return moves;
     }
+
+    
 }
 
 export default Bishop;
