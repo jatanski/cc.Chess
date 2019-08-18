@@ -1,5 +1,4 @@
 import Piece from "./piece";
-import board from './../board';
 
 class Pawn extends Piece {
     constructor(x, y, side) {
@@ -42,7 +41,7 @@ class Pawn extends Piece {
     }
 
     // główna metoda, w której trzeba zapisać wszystkie możliwe ruchy danej bierki.
-    findLegalMoves() {
+    findLegalMoves(board) {
         let legalMoves;
         const allMoves = Array([this._x + this._vector, this._y]);
 
