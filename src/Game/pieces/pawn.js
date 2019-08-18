@@ -1,5 +1,4 @@
 import Piece from "./piece";
-import board from './../board';
 
 class Pawn extends Piece {
     constructor(x, y, side) {
@@ -37,12 +36,23 @@ class Pawn extends Piece {
         return legalMoves;
     }
 
-    filterSelfAttacs(possibleMoves, board) {
+    _showAttackOnlyIfPossible(attacksArr, board) {
+        const allLegalAttacks = [];
+        
+        for (let attackCords of attacksArr) {
+            const x = attackCords[0];
+            const y = attackCords[1];
+            
+            if(board[x][y] && board[x][y]._side !== this._side) {
+                allLegalAttacks.push(attackCords);
+            }
+        }
 
+        return allLegalAttacks;
     }
 
     // główna metoda, w której trzeba zapisać wszystkie możliwe ruchy danej bierki.
-    findLegalMoves() {
+    findLegalMoves(board) {
         let legalMoves;
         const allMoves = Array([this._x + this._vector, this._y]);
 
@@ -57,19 +67,20 @@ class Pawn extends Piece {
         return legalMoves;
     }
 
-    findLegalAttacs() {
-        let legalAttacs;
-
-        const allAttacs = Array(
+    findLegalAttacks(board) {
+        let legalAttacks;
+        const allAttacks = Array(
             [this._x + this._vector, this._y + 1],
             [this._x + this._vector, this._y - 1]
         );
 
-        legalAttacs = allAttacs.filter(el => {
+        legalAttacks = allAttacks.filter(el => {
             return !(el[0] < 0 || el[0] > 7 || el[1] < 0 || el[1] > 7);
         });
 
-        return legalAttacs;
+        legalAttacks = this._showAttackOnlyIfPossible(legalAttacks, board);
+
+        return legalAttacks;
     }
 }
 

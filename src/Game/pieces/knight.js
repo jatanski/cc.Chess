@@ -1,5 +1,4 @@
 import Piece from "./piece";
-import board from './../board';
 
 class Knight extends Piece {
   constructor(x, y, side) {
@@ -12,8 +11,8 @@ class Knight extends Piece {
   filterCollisionMoves(possibleMoves, board) {
     const side = this._side;
     const filteredMoves = possibleMoves.filter(function(move) {
-      const target = board[move[0]][move[1]]
-      return target ? (target._side !== side) : true;
+      const target = board[move[0]][move[1]];
+      return target ? target._side !== side : true;
     });
     return filteredMoves;
   }
@@ -21,20 +20,27 @@ class Knight extends Piece {
   // filtruje ruchy wychodzące poza granice szachownicy
   filterOutOfBoard(possibleMoves) {
     const filteredMoves = possibleMoves.filter(function(move) {
-       return move.every(num => num >= 0 && num <= 7)
-     });
+      return move.every(num => num >= 0 && num <= 7);
+    });
     return filteredMoves;
   }
 
-  findLegalMoves() {
+  findLegalMoves(board) {
     const x = this._x;
     const y = this._y;
-    let legalMoves = 
-    [[x+2, y+1], [x+2, y-1], [x-2, y+1], [x-2, y-1],
-     [x+1, y+2], [x+1, y-2], [x-1, y+2], [x-1, y-2]];
+    let legalMoves = [
+      [x + 2, y + 1],
+      [x + 2, y - 1],
+      [x - 2, y + 1],
+      [x - 2, y - 1],
+      [x + 1, y + 2],
+      [x + 1, y - 2],
+      [x - 1, y + 2],
+      [x - 1, y - 2]
+    ];
 
     legalMoves = this.filterOutOfBoard(legalMoves);
-    legalMoves = this.filterCollisionMoves(legalMoves, board)
+    legalMoves = this.filterCollisionMoves(legalMoves, board);
 
     return legalMoves;
   }

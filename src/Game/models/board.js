@@ -1,13 +1,15 @@
-import Pawn from "./pieces/pawn";
-import Knight from "./pieces/knight";
-import Queen from "./pieces/queen";
-import Bishop from "./pieces/bishop";
-import King from "./pieces/king";
-import Rook from "./pieces/rook";
+import Pawn from "../pieces/pawn";
+import Knight from "../pieces/knight";
+import Queen from "../pieces/queen";
+import Bishop from "../pieces/bishop";
+import King from "../pieces/king";
+import Rook from "../pieces/rook";
+
 
 // klasa inicjująca tablicę, gdzie będą zapisywane pozycje bierek
 
-class Board extends Array {
+export default class Board extends Array {
+    
   createSecondLevel() {
     for (let i = 0; i < 8; i++) {
       this[i] = new Array(8);
@@ -69,8 +71,8 @@ class Board extends Array {
     }
   }
 
-  // metoda inicjująca
-
+  // metoda inicjalizująca
+  
   init() {
     this.createSecondLevel();
 
@@ -86,10 +88,3 @@ class Board extends Array {
     }
   }
 }
-
-const board = new Board(8);
-board.init();
-
-console.log(board); // służy do podejrzenia tablicy w konsoli
-
-export default board;
