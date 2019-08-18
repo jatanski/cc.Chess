@@ -11,8 +11,6 @@ export default class GameCtrl {
     _setListeners() {
         this._boardContainer.addEventListener('click', ev => {
             
-            // if (this.prevElement) this.removeHighlight(this.prevElement);
-            
             const squarePosition = ev.target
                 .closest('.square')
                 .dataset.id.split('-')
@@ -20,10 +18,7 @@ export default class GameCtrl {
                     return +el;
                 });
 
-            // console.log(squarePosition);
-            
             this._controllClick(squarePosition);
-            // this.displayMoves(position, ev.target);
         });
     }
 
@@ -37,10 +32,6 @@ export default class GameCtrl {
         razem z operatorami logicznymi wcale nie jest takie logiczne... */
         const gotBoardElement = Boolean(boardElement);
         const gotMarkedFigure = Boolean(this._markedFigure);
-
-        // // Tour
-        // const yourTurn = this._turn === boardElement._side;
-        // if (!yourTurn) return;;
 
         switch (true) {
 
