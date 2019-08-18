@@ -11,6 +11,8 @@ class Piece {
     }
     
     move(newPosition, board) {
+        // console.log(controller);
+
         const newX = newPosition[0];
         const newY = newPosition[1];
 

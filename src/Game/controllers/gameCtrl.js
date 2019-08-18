@@ -46,25 +46,29 @@ export default class GameCtrl {
 
             // Brak zaznaczenia / kliknięta figura
             case (!gotMarkedFigure && gotBoardElement) : 
-                console.log('Zaznaczam figurę');
+                if (this._turn !== boardElement._side) return;
                 this._handleMark(boardElement);
             break;
 
             // Zaznaczona / kliknięta pusta
             case (gotMarkedFigure && !gotBoardElement):
-                console.log('Próbuje ruszyć');
                 this._handleMove(position);
             break;
 
             // Zaznaczona / kliknięta figura przeciwnika
             case (gotMarkedFigure && gotBoardElement && this._isEnemy(boardElement)):
-                console.log('Próbuję bić');
                 this._handleAttack(position);
             break;
 
             default:
                 this._clearState();
         }
+    }
+    
+    _afterMoveOrAttack() {
+        this._turn = (this._turn === 'white') ? 'black' : 'white';
+
+        // Sprawdzamy warunki wygranej
     }
 
     _isEnemy(figure) {
@@ -75,22 +79,37 @@ export default class GameCtrl {
         return figure.findLegalMoves(this._boardModel);
     }
 
+    _getAtacks(figure) {
+        return figure.findLegalAttacks(this._boardModel);
+    }
+
     _clearState() {
         this._markedFigure = null;
         this._boardView.removeHighlight();
         this._boardView.removeMark();
+        this._boardView.removeAttacks();
     }
 
     _displayMoves(figure) {
         const moves = this._getMoves(figure);
         this._boardView.highlightSquares(moves);
         this._boardView.markSquare([figure._x, figure._y]);
+
+        if (figure.name === 'pawn') {
+            const attacks = this._getAtacks(figure);
+            this._boardView.highlightAttacks(attacks);
+        }
     }
 
     _handleMark(figure) {
         this._markedFigure = figure;
         this._displayMoves(figure);
     }
+
+    /* Metody _handleMove i _handleAttack są praktycznie identyczne,
+    jednak oddzielenie ich pozwala trochę lepiej zrozumieć kod,
+    ponadto w przyszłości zaimplementowanie roszady lub sprawdzanie mata
+    bardziej pasuje do metody _handleMove i trochę je zróżnicuje */ 
 
     _handleMove(position) {
         const moves = this._getMoves(this._markedFigure);
@@ -109,6 +128,7 @@ export default class GameCtrl {
             // Aktualizuje widok - przesyłamy _markedFigure, ponieważ posiada zaktualizowane _x oraz _y
             this._boardView.movePiece(oldPosition, this._markedFigure)
 
+            this._afterMoveOrAttack();
         }
 
         // Po ruchu lub kliknięcu w niewłaściwe pole
@@ -119,7 +139,7 @@ export default class GameCtrl {
         let attacks;
 
         if (this._markedFigure.name === 'pawn') {
-            attacks = this._markedFigure.findLegalAttacs();
+            attacks = this._markedFigure.findLegalAttacks(this._boardModel);
         } else {
             // Figury (bez piona) atakują te same pola po ktorych się poruszają
             attacks = this._getMoves(this._markedFigure); 
@@ -137,6 +157,8 @@ export default class GameCtrl {
 
             // Aktualizuje widok - przesyłamy _markedFigure, ponieważ posiada zaktualizowane _x oraz _y
             this._boardView.movePiece(oldPosition, this._markedFigure)
+            
+            this._afterMoveOrAttack();
         }
 
         // Po biciu lub kliknięcu w niewłaściwe pole

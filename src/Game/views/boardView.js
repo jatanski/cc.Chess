@@ -54,7 +54,17 @@ export default class BoardView {
                 .classList.add("highlighted");
         });
     }
-    
+
+    highlightAttacks(squares) {
+        if(!squares) return;
+
+        squares.forEach(position => {
+            this._boardElement
+                .querySelector(`[data-id="${position[0]}-${position[1]}"]`)
+                .classList.add("attacks");
+        });
+    }
+
     // Mark to pole na którym stoi zaznaczona bierka
     removeMark() {
         const marked = this._boardElement.querySelector('.marked') || null;
@@ -68,15 +78,19 @@ export default class BoardView {
         });
     }
 
+    // Attacks to pola po których możemy bić - dla piona
+    removeAttacks() {
+        this._boardElement.querySelectorAll('.attacks').forEach(square => {
+            square.classList.remove('attacks');
+        });
+    }
+
     movePiece(positionStart, figure) {
         // Czyścimy stare pole
         this._clearField(positionStart);
 
         // Ustawiamy aktualne
         this._setFigure(figure);
-    }
-
-    promote(position) {
     }
 
     init(board) {
