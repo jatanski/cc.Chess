@@ -59,7 +59,9 @@ class PromotePawn {
 
     // dodanie event listenerow
     icons.forEach(figure => {
-      figure.addEventListener("click", switchFigures(board));
+      figure.addEventListener("click", event => {
+        switchFigures(event, board)
+      });
     });
 
     function switchFigures(e, board) {
