@@ -87,7 +87,7 @@ class Pawn extends Piece {
 
   // sprawdzenie pozycji po ruchu, okreslenie czy jest mozliwosc promocji
   move(newPosition, board) {
-    super.move(newPosition);
+    super.move(newPosition, board);
     if (
       (this._side === "white" && this._x === 0) ||
       (this._side === "black" && this._x === 7)
