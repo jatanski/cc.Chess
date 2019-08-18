@@ -73,3 +73,39 @@ html {
 .white {
     color: var(--white-figures);
 }
+
+.promotion-box {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  position: absolute;
+  margin: 0 auto;
+  height: 20vh;
+  width: 40vh;
+  background-color: var(--highlighted);
+  text-align: center;
+  font-size: 3vh;
+  z-index: 2;
+}
+
+.promotion-icons {
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  align-items: center;
+  font-size: 6.5vh;
+}
+
+.promotion-icons > * {
+  cursor: pointer;
+}
+
+.cover-board {
+  position: absolute;
+  margin: 0 auto;
+  min-height: 80vh;
+  min-width: 80vh;
+  background-color: rgba(0, 0, 0, 0.5);
+}
