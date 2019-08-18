@@ -1,38 +1,36 @@
-import board from "../board";
+// import board from "../board";
 
 // klasa abstrakcyjna, po której dziedziczą wszystkie inne klasy bierek
 
 class Piece {
-  constructor(x, y, side) {
-    this._x = x;
-    this._y = y;
-    this._pristine = true;
-    this._side = side; //'black' or 'white'
-  }
-  move(newPosition) {
-    const newX = newPosition[0];
-    const newY = newPosition[1];
+    constructor(x, y, side) {
+        this._x = x;
+        this._y = y;
+        this._pristine = true;
+        this._side = side; // 'black' or 'white'
+    }
+    
+    move(newPosition, board) {
+        // console.log(controller);
 
-    //zapisuje nowe pola
-    board[newX][newY] = board[this._x][this._y];
+        const newX = newPosition[0];
+        const newY = newPosition[1];
 
-    //czyści stare pole
-    board[this._x][this._y] = null;
-    document.querySelector(`[data-id="${this._x}-${this._y}"]`).innerHTML = "";
+        // Przypisuje bierkę do nowego pola
+        board[newX][newY] = board[this._x][this._y];
 
-    //ustawia bierke na nowym polu
-    this._x = newX;
-    this._y = newY;
+        // Czyści stare pole
+        board[this._x][this._y] = null;
+        
+        // Aktualizuje _x i _y o nową pozycje
+        this._x = newX;
+        this._y = newY;
 
-    document.querySelector(
-      `[data-id="${newX}-${newY}"]`
-    ).innerHTML = this.display;
+        // Oznacza bierke jako ruszoną (ma to znaczenie w przypadku pierwszego ruchui piona lub roszady)
+        if(this._pristine) this._pristine = false;
 
-    //zmienia flage bierki po pierwszym ruchu
-    if(this._pristine) this._pristine = false;
-
-    console.log(board);
-  }
+        console.log(board); // Aktualna wersja modelu
+    }
 }
 
 export default Piece;

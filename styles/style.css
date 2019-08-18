@@ -1,65 +1,77 @@
 :root {
-  --white: rgb(201, 201, 161, 0.7);
-  --black: rgb(120, 158, 83);
-  --highlighted: orange;
-  --white-figures: rgba(255, 255, 255);
-  --black-figures: rgba(0, 0, 0, 0.7);
+    --white: rgb(201, 201, 161, 0.7);
+    --black: rgb(120, 158, 83);
+    --highlighted: rgb(240, 160, 0, .7);
+    --marked: rgb(120, 120, 120);
+    --attacks: rgb(200, 100, 100, .7);
+    --white-figures: rgba(255, 255, 255);
+    --black-figures: rgba(0, 0, 0, 0.7);
 }
 
 html {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 .wrap {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
 .board {
-  position: relative;
-  display: grid;
-  grid-template-rows: repeat(8, 1fr);
-  grid-template-columns: repeat(8, 1fr);
-  min-width: 80vh;
-  min-height: 80vh;
-  border: 1px solid var(--black);
+    position: relative;
+    display: grid;
+    grid-template-rows: repeat(8, 1fr);
+    grid-template-columns: repeat(8, 1fr);
+    min-width: 80vh;
+    min-height: 80vh;
+    border: 1px solid var(--black);
 }
 
 .square {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 10vh;
-  height: 10vh;
-  text-align: center;
-  line-height: 10vh;
-  font-size: 2vh;
-  cursor: pointer;
-  transition: background-color 1s;
-  background-color: var(--white);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 10vh;
+    height: 10vh;
+    text-align: center;
+    line-height: 10vh;
+    font-size: 2vh;
+    cursor: pointer;
+    transition: background-color 1s;
+    background-color: var(--white);
+    box-shadow: inset 0 0 1px var(--marked);
 }
 
 .square .fas {
-  font-size: 6.5vh;
+    font-size: 6.5vh;
 }
+
 .dark {
-  background-color: var(--black);
+    background-color: var(--black);
+}
+
+.marked {
+    background-color: var(--marked);
 }
 
 .highlighted {
-  background-color: var(--highlighted);
+    background-color: var(--highlighted);
+}
+
+.attacks {
+    background-color: var(--attacks);
 }
 
 .black {
-  color: var(--black-figures);
+    color: var(--black-figures);
 }
 
 .white {
-  color: var(--white-figures);
+    color: var(--white-figures);
 }
 
 .promotion-box {
