@@ -1,5 +1,6 @@
 import Piece from "./piece";
 import board from './../board';
+import PromotePawn from './../promotePawn'
 
 class Pawn extends Piece {
     constructor(x, y, side) {
@@ -70,6 +71,15 @@ class Pawn extends Piece {
         });
 
         return legalAttacs;
+    }
+
+    // sprawdzenie pozycji po ruchu, okreslenie czy jest mozliwosc promocji
+    move(newPosition) {
+        super.move(newPosition);
+        if ((this._side === 'white' && this._x === 0) ||
+            (this._side === 'black' && this._x === 7)) {
+            new PromotePawn(this)
+        }
     }
 }
 
