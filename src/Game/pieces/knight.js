@@ -1,5 +1,4 @@
 import Piece from "./piece";
-import board from "../models/board";
 
 class Knight extends Piece {
   constructor(x, y, side) {
@@ -26,7 +25,7 @@ class Knight extends Piece {
     return filteredMoves;
   }
 
-  findLegalMoves() {
+  findLegalMoves(board) {
     const x = this._x;
     const y = this._y;
     let legalMoves = [
