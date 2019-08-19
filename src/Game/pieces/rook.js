@@ -7,22 +7,42 @@ class Rook extends Piece {
         this.display = `<i class="fas fa-chess-rook ${side}"></i>`;
     }
 
-    // wszystkie możliwe ruchy
-    findLegalMoves() {
+        // wszystkie możliwe ruchy
+    findLegalMoves(board) {
         const x = this._x;
         const y = this._y;
-        const allMoves = [
-            [x - 7, y], [x - 6, y], [x - 5, y], [x - 4, y], [x - 3, y], [x - 2, y], [x - 1, y],
-            [x + 1, y], [x + 2, y], [x + 3, y], [x + 4, y], [x + 5, y], [x + 6, y], [x + 7, y],
-            [x, y - 7], [x, y - 6], [x, y - 5], [x, y - 4], [x, y - 3], [x, y - 2], [x, y - 1],
-            [x, y + 1], [x, y + 2], [x, y + 3], [x, y + 4], [x, y + 5], [x, y + 6], [x, y + 7]
-        ];
+        // console.log(x, y)
 
-        // nie wychodź poza szachownice
-        return allMoves.filter(el => {
-            return (el[0] >= 0 && el[0] <= 7);
-        });
+
+        // pętle które kolejno sprawdzają możliwe ruchy w oparciu o index szachownicy(przez co z niej nie wychodzi)
+        // + czy na polu znajduje się bierka
+        const allMoves = [];
+        for(let i = x + 1; i <= 7; i++) {
+            if (!board[i][y]) {
+                allMoves.push([i,y]);
+            } else break;
+        }
+        for(let i = x - 1; i >= 0; i--) {
+            if (!board[i][y]) {
+                allMoves.push([i,y]);
+            } else break;
+        }
+        for(let i = y + 1; i <= 7; i++) {
+            if (!board[x][i]) {
+                allMoves.push([x,i]);
+            } else break;
+        }
+        for(let i = y - 1; i >= 0; i--) {
+            if (!board[x][i]) {
+                allMoves.push([x,i]);
+            } else break;    
+        }
+
+            console.log(allMoves)
+            return allMoves;
     };
+    
+
 
 
 }
