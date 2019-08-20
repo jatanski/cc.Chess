@@ -109,3 +109,7 @@ html {
   min-width: 80vh;
   background-color: rgba(0, 0, 0, 0.5);
 }
+
+.checkmate{
+  background: red;
+}
