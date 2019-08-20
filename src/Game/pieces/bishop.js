@@ -11,10 +11,14 @@ class Bishop extends Piece {
     find1(board) {
         let legalMoves = [];
         let x = this._x-1;
-        let y = this._y+1;
+        let y = this._y + 1;
+        let side = this._side;
         
         for (var i = 1; i <= 7; i++) {
-            if (x < 0 || y > 7 || board[x][y]) {
+            if (x < 0 || y > 7 || (board[x][y] && board[x][y]._side === side)) {
+                break;
+            } else if (x < 0 || y > 7 || (board[x][y] && board[x][y]._side !== side)) {
+                legalMoves.push([x, y]);
                 break;
             } else {
                 legalMoves.push([x, y]);
@@ -31,9 +35,13 @@ class Bishop extends Piece {
         let legalMoves = [];
         let x = this._x - 1;
         let y = this._y - 1;
+        let side = this._side;
 
         for (var i = 1; i <= 7; i++) {
-            if (x < 0 || y < 0 || board[x][y]) {
+            if (x < 0 || y < 0 || (board[x][y] && board[x][y]._side === side)) {
+                break;
+            } else if (x < 0 || y < 0 || (board[x][y] && board[x][y]._side !== side)) {
+                legalMoves.push([x, y]);
                 break;
             } else {
                 legalMoves.push([x, y]);
@@ -50,9 +58,13 @@ class Bishop extends Piece {
         let legalMoves = [];
         let x = this._x + 1;
         let y = this._y + 1;
+        let side = this._side;
 
         for (var i = 1; i <= 7; i++) {
-            if (x > 7 || y > 7 || board[x][y]) {
+            if (x > 7 || y > 7 || (board[x][y] && board[x][y]._side === side)) {
+                break;
+            } else if (x > 7 || y > 7 || (board[x][y] && board[x][y]._side !== side)) {
+                legalMoves.push([x, y]);
                 break;
             } else {
                 legalMoves.push([x, y]);
@@ -69,9 +81,13 @@ class Bishop extends Piece {
         let legalMoves = [];
         let x = this._x + 1;
         let y = this._y - 1;
+        let side = this._side;
 
         for (var i = 1; i <= 7; i++) {
-            if (x > 7 || y < 0 || board[x][y]) {
+            if (x > 7 || y < 0 || (board[x][y] && board[x][y]._side === side)) {
+                break;
+            } else if (x > 7 || y < 0 || (board[x][y] && board[x][y]._side !== side)) {
+                legalMoves.push([x, y]);
                 break;
             } else {
                 legalMoves.push([x, y]);
@@ -83,7 +99,7 @@ class Bishop extends Piece {
         return legalMoves;
     }
 
-    // sprawdza kolizje ze swoimi oraz przeciwnikami 
+    // sprawdza kolizje ze swoimi oraz przeciwnikami
     checkCollision(board) {
         let legalMoves = [];
 
