@@ -7,24 +7,96 @@ class Bishop extends Piece {
         this.display = `<i class="fas fa-chess-bishop ${side}"></i>`
     }
 
-    
-
-    checkCollision(possibleMoves, board) {
+    //funkcja szukająca przeszkód po x-- i y++
+    find1(board) {
         let legalMoves = [];
-        for (let move of possibleMoves) {
-            if (!board[move[0]][move[1]]) {
-                legalMoves.push(move);
+        let x = this._x-1;
+        let y = this._y+1;
+        
+        for (var i = 1; i <= 7; i++) {
+            if (x < 0 || y > 7 || board[x][y]) {
+                break;
+            } else {
+                legalMoves.push([x, y]);
             }
+            x -= 1;
+            y += 1;
         }
-       
+        
         return legalMoves;
     }
 
+    //funkcja szukająca przeszkód po x-- i y--
+    find2(board) {
+        let legalMoves = [];
+        let x = this._x - 1;
+        let y = this._y - 1;
 
+        for (var i = 1; i <= 7; i++) {
+            if (x < 0 || y < 0 || board[x][y]) {
+                break;
+            } else {
+                legalMoves.push([x, y]);
+            }
+            x -= 1;
+            y -= 1;
+        }
 
+        return legalMoves;
+    }
+
+    //funkcja szukająca przeszkód po x++ i y++
+    find3(board) {
+        let legalMoves = [];
+        let x = this._x + 1;
+        let y = this._y + 1;
+
+        for (var i = 1; i <= 7; i++) {
+            if (x > 7 || y > 7 || board[x][y]) {
+                break;
+            } else {
+                legalMoves.push([x, y]);
+            }
+            x += 1;
+            y += 1;
+        }
+
+        return legalMoves;
+    }
+
+    //funkcja szukająca przeszkód po x++ i y--
+    find4(board) {
+        let legalMoves = [];
+        let x = this._x + 1;
+        let y = this._y - 1;
+
+        for (var i = 1; i <= 7; i++) {
+            if (x > 7 || y < 0 || board[x][y]) {
+                break;
+            } else {
+                legalMoves.push([x, y]);
+            }
+            x += 1;
+            y -= 1;
+        }
+
+        return legalMoves;
+    }
+
+    // sprawdza kolizje ze swoimi oraz przeciwnikami 
+    checkCollision(board) {
+        let legalMoves = [];
+
+        legalMoves.push(...this.find1(board))
+        legalMoves.push(...this.find2(board))
+        legalMoves.push(...this.find3(board))
+        legalMoves.push(...this.find4(board))
+        
+        return legalMoves;
+    }
     // metoda zwracająca tablicę możliwych ruchów dla bierki 
     findLegalMoves(board) {
-            const allMoves = Array([this._x , this._y]);
+        const allMoves =[];
         let moves = [];
         const x = this._x
         const y = this._y;
@@ -41,8 +113,8 @@ class Bishop extends Piece {
         const possibleMove = allMoves.filter((n) => {
             return (n[0] >= 0 && n[0] <= 7 && n[1] >= 0 && n[1] <= 7);
         })
-        moves = this.checkCollision(possibleMove, board);
-        return moves;
+        
+        return this.checkCollision(board);
     }
 
     
