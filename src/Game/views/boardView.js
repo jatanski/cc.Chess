@@ -98,8 +98,13 @@ export default class BoardView {
     updateTime(element, timeInSeconds) {
         const minutes = Math.floor(timeInSeconds / 60);
         let seconds = timeInSeconds - (minutes * 60);
-        if(seconds < 10) seconds = '0' + seconds;
-        element.innerHTML = `${minutes}:${seconds}`;
+
+        if(timeInSeconds === 0) {
+            element.innerHTML = `WYGRYWA`;
+        } else {
+            if(seconds < 10) seconds = '0' + seconds;
+            element.innerHTML = `${minutes}:${seconds}`; 
+        }
     }
 
     init(board) {

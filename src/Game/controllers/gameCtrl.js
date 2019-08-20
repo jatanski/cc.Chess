@@ -201,11 +201,13 @@ export default class GameCtrl {
         if (side === 'white') {
             this.timeWhiteInterval = setInterval(() => {
                 this.timeWhite--;
+                if(this.timeWhite < 0) return this._endGame();
                 this._boardView.updateTime(this._boardView.timerWhite, this.timeWhite);
             }, 1000)
         } else {
             this.timeBlackInterval = setInterval(() => {
                 this.timeBlack--;
+                if(this.timeBlack < 0) return this._endGame();
                 this._boardView.updateTime(this._boardView.timerBlack, this.timeBlack);
             }, 1000)
         }
@@ -216,6 +218,10 @@ export default class GameCtrl {
         clearInterval(this.timeWhiteInterval);
     }
     
+    _endGame() {
+        this._clearTimeIntervals();
+    }
+
     init() {
         console.log('Inicjalizacja controllera...');
         
