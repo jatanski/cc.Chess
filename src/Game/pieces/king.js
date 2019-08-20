@@ -7,21 +7,26 @@ class King extends Piece {
         this.display = `<i class="fas fa-chess-king ${side}"></i>`;
     }
 
-    collisionFilter(possibleMoves, board) {
-        const clearedMoves = [];
-        for (let move of possibleMoves) {
-            const x = move[0];
-            const y = move[1];
-            const piece = board[x][y];
-            if (!piece) {
-                clearedMoves.push(move);
-            }
-        }
-       
-        return clearedMoves;
-        
-    }
+    //move - pozycja mozliwych ruchow (wlacznie z kolizjami)
 
+    //board[move[0]][move[1]] - pionki na planszy na pozycjach z move, jak nie ma
+    //to null
+
+    //colissionFilter - filtruje zajete pola z wyjatkiem tych, nalezacych do pionkow przeciwnych
+        collisionFilter(possibleMoves, board) {
+            const clearedMoves = [];
+            let side = this._side;
+            for (let move of possibleMoves) {
+                const x = move[0];
+                const y = move[1];
+                const piecesInfo = board[x][y];
+                if (!(piecesInfo && piecesInfo._side == side)) {
+                    clearedMoves.push(move);
+                }
+            }
+            return clearedMoves;
+        }
+        
     // główna metoda, w której trzeba zapisać wszystkie możliwe ruchy danej bierki.
     findLegalMoves(board) {
         const x = this._x;
