@@ -94,7 +94,9 @@ export default class GameCtrl {
     }
 
     _displayMoves(figure) {
-        const moves = this._getMoves(figure);
+        let moves = this._getMoves(figure);
+        // moves = this._filterEnemyKingPosition(moves);
+
         this._boardView.highlightSquares(moves);
         this._boardView.markSquare([figure._x, figure._y]);
 
@@ -109,6 +111,26 @@ export default class GameCtrl {
         this._displayMoves(figure);
     }
 
+    _filterEnemyKingPosition(moves) {
+        let kingPosition;
+        const oppositeKingColor = (this._markedFigure._side === 'white') ? 'black' : 'white';
+
+        this._boardModel.forEach(row => {
+            row.forEach(figure => {
+                if(figure && figure.name === 'king' && figure._side === oppositeKingColor) {
+                    kingPosition = [figure._x, figure._y]
+                }
+            })
+        });
+        
+
+        console.log(kingPosition)
+
+        return moves.filter(el => {
+            return !(el[0] == kingPosition[0] && el[1] == kingPosition[1]); 
+        })
+    }
+
     /* Metody _handleMove i _handleAttack są praktycznie identyczne,
     jednak oddzielenie ich pozwala trochę lepiej zrozumieć kod,
     ponadto w przyszłości zaimplementowanie roszady lub sprawdzanie mata
@@ -116,7 +138,7 @@ export default class GameCtrl {
 
     _handleMove(position) {
         const moves = this._getMoves(this._markedFigure);
-        
+
         // Jeżeli kliknięte pole znajduje się w tabeli mozliwych ruchów to rusz, jak nie odznacz
         const moveIndex = moves.findIndex(move => move.join() === position.join() );
 
@@ -147,6 +169,9 @@ export default class GameCtrl {
             // Figury (bez piona) atakują te same pola po ktorych się poruszają
             attacks = this._getMoves(this._markedFigure); 
         }
+
+        // Nie bijemy króla
+        attacks = this._filterEnemyKingPosition(attacks);
 
         const attackIndex = attacks.findIndex(attack => attack.join() === position.join() );
 
