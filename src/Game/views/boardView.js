@@ -100,7 +100,7 @@ export default class BoardView {
         let seconds = timeInSeconds - (minutes * 60);
 
         if(timeInSeconds === 0) {
-            element.innerHTML = `WYGRYWA`;
+            element.innerHTML = `PRZEGRYWA`;
         } else {
             if(seconds < 10) seconds = '0' + seconds;
             element.innerHTML = `${minutes}:${seconds}`; 
