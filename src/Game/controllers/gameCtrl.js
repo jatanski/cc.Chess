@@ -19,7 +19,19 @@ export default class GameCtrl {
                 });
 
             this._controllClick(squarePosition);
+            this._checkIfCheckmate();
         });
+    }
+
+    _checkIfCheckmate() {
+        let king = null;
+        this._boardContainer.childNodes.forEach(e => e.classList.remove('checkmate'));
+        this._boardModel.forEach(a => a.forEach(e => {if(e !== null && e.name === 'king' && e._side !== this._turn)king = e}));
+        this._boardModel.forEach(a => a.forEach(e => {if(e !== null && e._side === this._turn)this._getMoves(e)
+            .forEach(m => {if( m[0]=== king._x && m[1] === king._y){
+                this._boardContainer.children[e._x*8+e._y].classList.add('checkmate');
+                this._boardContainer.children[king._x*8+king._y].classList.add('checkmate');
+            }})}));
     }
 
     _controllClick(position) {
