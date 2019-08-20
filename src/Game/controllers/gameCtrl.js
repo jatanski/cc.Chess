@@ -70,8 +70,6 @@ export default class GameCtrl {
     
     _afterMoveOrAttack() {
         this._turn = (this._turn === 'white') ? 'black' : 'white';
-
-        // Sprawdzamy warunki wygranej
     }
 
     _isEnemy(figure) {
@@ -94,8 +92,7 @@ export default class GameCtrl {
     }
 
     _displayMoves(figure) {
-        let moves = this._getMoves(figure);
-        // moves = this._filterEnemyKingPosition(moves);
+        const moves = this._getMoves(figure);
 
         this._boardView.highlightSquares(moves);
         this._boardView.markSquare([figure._x, figure._y]);
@@ -122,9 +119,6 @@ export default class GameCtrl {
                 }
             })
         });
-        
-
-        console.log(kingPosition)
 
         return moves.filter(el => {
             return !(el[0] == kingPosition[0] && el[1] == kingPosition[1]); 
