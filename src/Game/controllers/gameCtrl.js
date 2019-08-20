@@ -203,13 +203,13 @@ export default class GameCtrl {
                 this.timeWhite--;
                 if(this.timeWhite < 0) return this._endGame();
                 this._boardView.updateTime(this._boardView.timerWhite, this.timeWhite);
-            }, 10)
+            }, 1000)
         } else {
             this.timeBlackInterval = setInterval(() => {
                 this.timeBlack--;
                 if(this.timeBlack < 0) return this._endGame();
                 this._boardView.updateTime(this._boardView.timerBlack, this.timeBlack);
-            }, 10)
+            }, 1000)
         }
     }
 
