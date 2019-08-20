@@ -70,8 +70,8 @@ export default class GameCtrl {
     
     _afterMoveOrAttack() {
         this._turn = (this._turn === 'white') ? 'black' : 'white';
-
-        // Sprawdzamy warunki wygranej
+        this._clearTimeIntervals();
+        this._setTimeInterval(this._turn);
     }
 
     _isEnemy(figure) {
@@ -95,6 +95,7 @@ export default class GameCtrl {
 
     _displayMoves(figure) {
         const moves = this._getMoves(figure);
+
         this._boardView.highlightSquares(moves);
         this._boardView.markSquare([figure._x, figure._y]);
 
@@ -109,6 +110,23 @@ export default class GameCtrl {
         this._displayMoves(figure);
     }
 
+    _filterEnemyKingPosition(moves) {
+        let kingPosition;
+        const oppositeKingColor = (this._markedFigure._side === 'white') ? 'black' : 'white';
+
+        this._boardModel.forEach(row => {
+            row.forEach(figure => {
+                if(figure && figure.name === 'king' && figure._side === oppositeKingColor) {
+                    kingPosition = [figure._x, figure._y]
+                }
+            })
+        });
+
+        return moves.filter(el => {
+            return !(el[0] == kingPosition[0] && el[1] == kingPosition[1]); 
+        })
+    }
+
     /* Metody _handleMove i _handleAttack są praktycznie identyczne,
     jednak oddzielenie ich pozwala trochę lepiej zrozumieć kod,
     ponadto w przyszłości zaimplementowanie roszady lub sprawdzanie mata
@@ -116,7 +134,7 @@ export default class GameCtrl {
 
     _handleMove(position) {
         const moves = this._getMoves(this._markedFigure);
-        
+
         // Jeżeli kliknięte pole znajduje się w tabeli mozliwych ruchów to rusz, jak nie odznacz
         const moveIndex = moves.findIndex(move => move.join() === position.join() );
 
@@ -148,6 +166,9 @@ export default class GameCtrl {
             attacks = this._getMoves(this._markedFigure); 
         }
 
+        // Nie bijemy króla
+        attacks = this._filterEnemyKingPosition(attacks);
+
         const attackIndex = attacks.findIndex(attack => attack.join() === position.join() );
 
         if (attackIndex > -1) {     
@@ -166,7 +187,34 @@ export default class GameCtrl {
 
         // Po biciu lub kliknięcu w niewłaściwe pole
         this._clearState();
-    } 
+    }
+
+    _initTimers(gameDurationInMinutes) {
+        const currentTime = Date.now();
+        const gameDurationTimeStamp = (currentTime + gameDurationInMinutes * 60 * 1000) - currentTime;
+        this.timeBlack = gameDurationTimeStamp / 1000;
+        this.timeWhite = gameDurationTimeStamp / 1000;
+        this._setTimeInterval('white');
+    }
+
+    _setTimeInterval(side) {
+        if (side === 'white') {
+            this.timeWhiteInterval = setInterval(() => {
+                this.timeWhite--;
+                this._boardView.updateTime(this._boardView.timerWhite, this.timeWhite);
+            }, 1000)
+        } else {
+            this.timeBlackInterval = setInterval(() => {
+                this.timeBlack--;
+                this._boardView.updateTime(this._boardView.timerBlack, this.timeBlack);
+            }, 1000)
+        }
+    }
+
+    _clearTimeIntervals() {
+        clearInterval(this.timeBlackInterval);
+        clearInterval(this.timeWhiteInterval);
+    }
     
     init() {
         console.log('Inicjalizacja controllera...');
@@ -174,6 +222,7 @@ export default class GameCtrl {
         this._boardModel.init();
         this._boardView.init(this._boardModel);
         this._setListeners();
+        this._initTimers(5);
 
         console.log(this._boardModel); // służy do podejrzenia tablicy w konsoli
     }

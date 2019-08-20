@@ -2,6 +2,8 @@
 export default class BoardView {
     constructor(boardContainer) {
         this._boardElement = boardContainer;
+        this.timerBlack = boardContainer.previousElementSibling;
+        this.timerWhite = boardContainer.nextElementSibling;
     }
 
     _createSquares(board) {
@@ -91,6 +93,13 @@ export default class BoardView {
 
         // Ustawiamy aktualne
         this._setFigure(figure);
+    }
+
+    updateTime(element, timeInSeconds) {
+        const minutes = Math.floor(timeInSeconds / 60);
+        let seconds = timeInSeconds - (minutes * 60);
+        if(seconds < 10) seconds = '0' + seconds;
+        element.innerHTML = `${minutes}:${seconds}`;
     }
 
     init(board) {
