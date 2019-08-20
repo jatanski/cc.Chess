@@ -70,6 +70,8 @@ export default class GameCtrl {
     
     _afterMoveOrAttack() {
         this._turn = (this._turn === 'white') ? 'black' : 'white';
+        this._clearTimeIntervals();
+        this._setTimeInterval(this._turn);
     }
 
     _isEnemy(figure) {
@@ -185,7 +187,34 @@ export default class GameCtrl {
 
         // Po biciu lub kliknięcu w niewłaściwe pole
         this._clearState();
-    } 
+    }
+
+    _initTimers(gameDurationInMinutes) {
+        const currentTime = Date.now();
+        const gameDurationTimeStamp = (currentTime + gameDurationInMinutes * 60 * 1000) - currentTime;
+        this.timeBlack = gameDurationTimeStamp / 1000;
+        this.timeWhite = gameDurationTimeStamp / 1000;
+        this._setTimeInterval('white');
+    }
+
+    _setTimeInterval(side) {
+        if (side === 'white') {
+            this.timeWhiteInterval = setInterval(() => {
+                this.timeWhite--;
+                this._boardView.updateTime(this._boardView.timerWhite, this.timeWhite);
+            }, 1000)
+        } else {
+            this.timeBlackInterval = setInterval(() => {
+                this.timeBlack--;
+                this._boardView.updateTime(this._boardView.timerBlack, this.timeBlack);
+            }, 1000)
+        }
+    }
+
+    _clearTimeIntervals() {
+        clearInterval(this.timeBlackInterval);
+        clearInterval(this.timeWhiteInterval);
+    }
     
     init() {
         console.log('Inicjalizacja controllera...');
@@ -193,6 +222,7 @@ export default class GameCtrl {
         this._boardModel.init();
         this._boardView.init(this._boardModel);
         this._setListeners();
+        this._initTimers(5);
 
         console.log(this._boardModel); // służy do podejrzenia tablicy w konsoli
     }

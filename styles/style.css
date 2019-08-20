@@ -18,9 +18,13 @@ html {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
     height: 100vh;
 }
-
+.time {
+    padding: 1rem 2rem;
+    font-size: 2rem;
+}
 .board {
     position: relative;
     display: grid;
