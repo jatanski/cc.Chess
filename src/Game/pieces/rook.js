@@ -11,31 +11,47 @@ class Rook extends Piece {
     findLegalMoves(board) {
         const x = this._x;
         const y = this._y;
+        let side = this._side;
         // console.log(x, y)
 
-
+    
         // pętle które kolejno sprawdzają możliwe ruchy w oparciu o index szachownicy(przez co z niej nie wychodzi)
         // + czy na polu znajduje się bierka
-        const allMoves = [];
+         const allMoves = [];
         for(let i = x + 1; i <= 7; i++) {
             if (!board[i][y]) {
                 allMoves.push([i,y]);
+            } else if (board[i][y] && board[i][y]._side !== side) {
+                allMoves.push([i, y]);
+                break;
             } else break;
         }
         for(let i = x - 1; i >= 0; i--) {
-            if (!board[i][y]) {
+            if (!board[i][y] ) {
                 allMoves.push([i,y]);
+               // console.log(board[i][y]._side)
+            } else if (board[i][y] && board[i][y]._side !== side) {
+                allMoves.push([i, y]);
+                break;
             } else break;
         }
+        
         for(let i = y + 1; i <= 7; i++) {
             if (!board[x][i]) {
                 allMoves.push([x,i]);
+            } else if (board[x][i] && board[x][i]._side !== side) {
+                allMoves.push([x, i]);
+                break;
             } else break;
         }
+        
         for(let i = y - 1; i >= 0; i--) {
             if (!board[x][i]) {
                 allMoves.push([x,i]);
-            } else break;    
+            } else if (board[x][i] && board[x][i]._side !== side) {
+                allMoves.push([x, i]);
+                break;
+            } else break;
         }
 
             console.log(allMoves)
