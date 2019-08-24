@@ -26,6 +26,7 @@ html {
     font-size: 2rem;
 }
 .board {
+    padding: 0;
     position: relative;
     display: grid;
     grid-template-rows: repeat(8, 1fr);
@@ -39,8 +40,8 @@ html {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 10vh;
-    height: 10vh;
+    max-width: 100%;
+    height: auto;
     text-align: center;
     line-height: 10vh;
     font-size: 2vh;
@@ -116,4 +117,99 @@ html {
 
 .checkmate{
   background: red;
+}
+
+
+
+
+@media (max-width: 720px) {
+    
+    .board{
+        min-width: 70vh;
+        min-height: 70vh;
+    }
+
+    .wrap {
+        height: 90vh;
+    }
+}
+
+@media (max-width: 550px) {
+
+    .board{
+        min-width: 50vh;
+        min-height: 50vh;
+    }
+
+    .square .fas {
+        font-size: 5vh;
+    }
+
+    .wrap {
+        height: 70vh;
+    }
+
+}
+
+@media (max-width: 450px) {
+
+    .board {
+        min-width: 40vh;
+        min-height: 40vh;
+    }
+
+    .square .fas {
+        font-size: 4.5vh;
+    }
+
+    .time {
+        font-size: 1.6rem;
+    }
+
+    .wrap {
+        height: 60vh;
+    }
+
+}
+
+@media (max-width: 350px) {
+
+    .board {
+        min-width: 35vh;
+        min-height: 35vh;
+    }
+
+    .square .fas {
+        font-size: 3.5vh;
+    }
+
+    .time {
+        font-size: 1.3rem;
+    }
+
+    .wrap {
+        height: 50vh;
+    }
+
+}
+
+@media (max-width: 250px) {
+
+    .board {
+        min-width: 25vh;
+        min-height: 25vh;
+    }
+
+    .square .fas {
+        font-size: 2.5vh;
+    }
+
+    .time {
+        font-size: 1rem;
+    }
+
+    .wrap {
+        height: 40vh;
+    }
+
 }
