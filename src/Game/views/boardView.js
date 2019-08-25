@@ -2,8 +2,8 @@
 export default class BoardView {
     constructor(boardContainer) {
         this._boardElement = boardContainer;
-        this.timerBlack = boardContainer.previousElementSibling;
-        this.timerWhite = boardContainer.nextElementSibling;
+        this.timerBlack = document.querySelector('.time--black');
+        this.timerWhite = document.querySelector('.time--white');
     }
 
     _createSquares(board) {
