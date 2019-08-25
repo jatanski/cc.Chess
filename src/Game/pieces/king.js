@@ -13,20 +13,66 @@ class King extends Piece {
     //to null
 
     //colissionFilter - filtruje zajete pola z wyjatkiem tych, nalezacych do pionkow przeciwnych
-        collisionFilter(possibleMoves, board) {
-            const clearedMoves = [];
-            let side = this._side;
-            for (let move of possibleMoves) {
-                const x = move[0];
-                const y = move[1];
-                const piecesInfo = board[x][y];
-                if (!(piecesInfo && piecesInfo._side == side)) {
-                    clearedMoves.push(move);
+    collisionFilter(possibleMoves, board) {
+        const clearedMoves = [];
+        let side = this._side;
+        let enemySide;
+        if (side == 'white') {
+            enemySide = 'black';
+        } else {
+            enemySide = 'white';
+        }
+
+        const enemyKingPos = (this.checkForKing(board, enemySide));
+        const enemyKingPosX = enemyKingPos[0];
+        const enemyKingPosY = enemyKingPos[1];
+
+        let blockedByEnemy = [
+            [enemyKingPosX+1, enemyKingPosY+1],
+            [enemyKingPosX+1, enemyKingPosY-1],
+            [enemyKingPosX-1, enemyKingPosY+1],
+            [enemyKingPosX-1, enemyKingPosY-1],
+            [enemyKingPosX, enemyKingPosY+1],
+            [enemyKingPosX, enemyKingPosY-1],
+            [enemyKingPosX+1, enemyKingPosY],
+            [enemyKingPosX-1, enemyKingPosY]
+        ];
+        //console.log(enemyKingPos);
+        for (let move of possibleMoves) {
+            const xPos = move[0];
+            const yPos = move[1];
+            const piecesInfo = board[xPos][yPos];
+                if (!(piecesInfo && piecesInfo._side == side)) { 
+                        clearedMoves.push(move);
+                    }
+                }
+        
+        for (let i=0; i<clearedMoves.length; i++){
+            for (let j=0; j<blockedByEnemy.length; j++){
+                if ((clearedMoves[i][0] == blockedByEnemy[j][0] && clearedMoves[i][1] == blockedByEnemy[j][1])){
+                    clearedMoves.splice(i,1);
                 }
             }
-            return clearedMoves;
+   
         }
-        
+            return clearedMoves;
+    }
+       
+    //szuka krolow na szachownicy, jak side = white, to wtedy bialego
+    checkForKing(board, side='white') {
+        let enemyKingPos = [];
+        for (let i=0; i<board.length; i++){
+            for (let j=0; j<board.length; j++){
+                if(board[i][j] && board[i][j].name == 'king' && board[i][j]._side == side){
+                    enemyKingPos = [i,j]
+                }     
+            }
+        }
+        return enemyKingPos;
+    }
+
+    
+
     // główna metoda, w której trzeba zapisać wszystkie możliwe ruchy danej bierki.
     findLegalMoves(board) {
         const x = this._x;
@@ -48,6 +94,7 @@ class King extends Piece {
             }
         }
         possibleMoves = this.collisionFilter(possibleMoves, board);
+        this.checkForKing(board);
         return possibleMoves;
     }
 }
