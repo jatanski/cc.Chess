@@ -3,34 +3,34 @@
 // klasa abstrakcyjna, po której dziedziczą wszystkie inne klasy bierek
 
 class Piece {
-    constructor(x, y, side) {
-        this._x = x;
-        this._y = y;
-        this._pristine = true;
-        this._side = side; // 'black' or 'white'
-    }
-    
-    move(newPosition, board) {
-        // console.log(controller);
+  constructor(x, y, side) {
+    this._x = x;
+    this._y = y;
+    this._pristine = true;
+    this._side = side; // 'black' or 'white'
+  }
 
-        const newX = newPosition[0];
-        const newY = newPosition[1];
+  move(newPosition, board) {
+    // console.log(controller);
 
-        // Przypisuje bierkę do nowego pola
-        board[newX][newY] = board[this._x][this._y];
+    const newX = newPosition[0];
+    const newY = newPosition[1];
 
-        // Czyści stare pole
-        board[this._x][this._y] = null;
-        
-        // Aktualizuje _x i _y o nową pozycje
-        this._x = newX;
-        this._y = newY;
+    // Przypisuje bierkę do nowego pola
+    board[newX][newY] = board[this._x][this._y];
 
-        // Oznacza bierke jako ruszoną (ma to znaczenie w przypadku pierwszego ruchui piona lub roszady)
-        if(this._pristine) this._pristine = false;
+    // Czyści stare pole
+    board[this._x][this._y] = null;
 
-        // console.log(board); // Aktualna wersja modelu
-    }
+    // Aktualizuje _x i _y o nową pozycje
+    this._x = newX;
+    this._y = newY;
+
+    // Oznacza bierke jako ruszoną (ma to znaczenie w przypadku pierwszego ruchui piona lub roszady)
+    if (this._pristine) this._pristine = false;
+
+    // console.log(board); // Aktualna wersja modelu
+  }
 }
 
 export default Piece;
