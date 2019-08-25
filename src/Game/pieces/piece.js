@@ -29,7 +29,7 @@ class Piece {
         // Oznacza bierke jako ruszoną (ma to znaczenie w przypadku pierwszego ruchui piona lub roszady)
         if(this._pristine) this._pristine = false;
 
-        console.log(board); // Aktualna wersja modelu
+        // console.log(board); // Aktualna wersja modelu
     }
 }
 

@@ -7,6 +7,7 @@ export default class GameCtrl {
         this._markedFigure = null;
         this._turn = 'white';
         this._check = {};
+        this._play = true;
     }
 
     _setListeners() {
@@ -98,10 +99,17 @@ export default class GameCtrl {
             legalMoves.push(position);
         });
 
+        if (legalMoves.length < 1) {
+            const who = (this._turn === 'white') ? 'black' : 'white';
+            this._endGame(who);
+        }
         return legalMoves;
     }
 
     _controllClick(position) {
+        // Nie rób nic, jeżeli koniec gry
+        if(!this._play) return;
+
         const x = position[0];
         const y = position[1];
 
@@ -140,6 +148,8 @@ export default class GameCtrl {
         this._turn = (this._turn === 'white') ? 'black' : 'white';
         this._clearTimeIntervals();
         this._setTimeInterval(this._turn);
+
+        if (this._check.isCheck) this._findKingMovesWhenCheck();
     }
 
     _isEnemy(figure) {
@@ -147,7 +157,27 @@ export default class GameCtrl {
     }
 
     _getMoves(figure) {
-        return figure.findLegalMoves(this._boardModel);
+        const moves = figure.findLegalMoves(this._boardModel);
+        return moves;
+    }
+
+    _getKingMoves(figure) {
+        const allLegalMoves = [];
+        const moves = figure.findLegalMoves(this._boardModel);
+
+        if(moves.length < 1) return;
+
+        const allEnemyAttacks = this._findAllEnemyPossibleAttacks();
+
+        moves.forEach(position => {
+            const samePosition = allEnemyAttacks.some(enemyAttackPos => {
+                return enemyAttackPos.join() === position.join();;
+            })
+            if(samePosition) return
+            allLegalMoves.push(position);
+        });
+
+        return allLegalMoves;
     }
 
     _getAttacks(figure) {
@@ -166,6 +196,8 @@ export default class GameCtrl {
 
         if(this._check.isCheck && figure.name === 'king') {
             moves = this._findKingMovesWhenCheck();
+        } else if (figure.name === 'king') {
+            moves = this._getKingMoves(figure);
         } else {
             moves = this._getMoves(figure);
         }
@@ -210,6 +242,10 @@ export default class GameCtrl {
 
         if (this._check.isCheck && this._markedFigure.name === 'king') {
             moves = this._findKingMovesWhenCheck();
+
+        } else if (this._markedFigure.name === 'king') {
+            moves = this._getKingMoves(this._markedFigure);
+
         } else {
             moves = this._getMoves(this._markedFigure);
         }
@@ -218,7 +254,7 @@ export default class GameCtrl {
         const moveIndex = moves.findIndex(move => move.join() === position.join() );
 
         if (moveIndex > -1) {
-            console.log('RUSZAM!')
+            // console.log('RUSZAM!')
 
             const oldPosition = [this._markedFigure._x, this._markedFigure._y];
 
@@ -252,7 +288,7 @@ export default class GameCtrl {
         const attackIndex = attacks.findIndex(attack => attack.join() === position.join() );
 
         if (attackIndex > -1) {     
-            console.log('BIJE!')
+            // console.log('BIJE!')
 
             const oldPosition = [this._markedFigure._x, this._markedFigure._y];
 
@@ -281,13 +317,13 @@ export default class GameCtrl {
         if (side === 'white') {
             this.timeWhiteInterval = setInterval(() => {
                 this.timeWhite--;
-                if(this.timeWhite < 0) return this._endGame();
+                if(this.timeWhite < 0) return this._endGame('black');
                 this._boardView.updateTime(this._boardView.timerWhite, this.timeWhite);
             }, 1000)
         } else {
             this.timeBlackInterval = setInterval(() => {
                 this.timeBlack--;
-                if(this.timeBlack < 0) return this._endGame();
+                if(this.timeBlack < 0) return this._endGame('white');
                 this._boardView.updateTime(this._boardView.timerBlack, this.timeBlack);
             }, 1000)
         }
@@ -298,10 +334,10 @@ export default class GameCtrl {
         clearInterval(this.timeWhiteInterval);
     }
     
-    _endGame() {
+    _endGame(winnerSide) {
         this._clearTimeIntervals();
-
-        // removeListener
+        this._play = false;
+        window.alert(`Gratulacje wygrywają  ${(winnerSide === 'white') ? 'białe' : 'czarne'}`);
     }
 
     init() {
@@ -310,7 +346,7 @@ export default class GameCtrl {
         this._boardModel.init();
         this._boardView.init(this._boardModel);
         this._setListeners();
-        this._initTimers(5);
+        this._initTimers(2);
 
         console.log(this._boardModel); // służy do podejrzenia tablicy w konsoli
     }
