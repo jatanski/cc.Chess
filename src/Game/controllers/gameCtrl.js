@@ -1,16 +1,18 @@
 
-export default class GameCtrl {   
+export default class GameCtrl {
     constructor(BoardView, BoardModel, boardContainerId) {
         this._boardContainer = document.querySelector(`#${boardContainerId}`);
         this._boardModel = new BoardModel;
         this._boardView = new BoardView(this._boardContainer);
         this._markedFigure = null;
         this._turn = 'white';
+        this._king = null;
+        this._isCheckmate = false;
     }
 
     _setListeners() {
         this._boardContainer.addEventListener('click', ev => {
-            
+
             const squarePosition = ev.target
                 .closest('.square')
                 .dataset.id.split('-')
@@ -18,19 +20,20 @@ export default class GameCtrl {
                     return +el;
                 });
 
-            this._controllClick(squarePosition);
             this._checkIfCheckmate();
+            this._controllClick(squarePosition);
         });
     }
 
     _checkIfCheckmate() {
-        let king = null;
+        this._isCheckmate = false;
         this._boardContainer.childNodes.forEach(e => e.classList.remove('checkmate'));
-        this._boardModel.forEach(a => a.forEach(e => {if(e !== null && e.name === 'king' && e._side !== this._turn)king = e}));
-        this._boardModel.forEach(a => a.forEach(e => {if(e !== null && e._side === this._turn)this._getMoves(e)
-            .forEach(m => {if( m[0]=== king._x && m[1] === king._y){
+        this._boardModel.forEach(a => a.forEach(e => {if(e !== null && e.name === 'king' && e._side === this._turn)this._king = e}));
+        this._boardModel.forEach(a => a.forEach(e => {if(e !== null && e._side !== this._turn)this._getMoves(e)
+            .forEach(m => {if( m[0]=== this._king._x && m[1] === this._king._y){
                 this._boardContainer.children[e._x*8+e._y].classList.add('checkmate');
-                this._boardContainer.children[king._x*8+king._y].classList.add('checkmate');
+                this._boardContainer.children[this._king._x*8+this._king._y].classList.add('checkmate');
+                this._isCheckmate = true;
             }})}));
     }
 
@@ -40,7 +43,7 @@ export default class GameCtrl {
 
         const boardElement = this._boardModel[x][y] || null;
 
-        /* Musiałem to zrobić w taki sposób, bo jak się okazuje stosowanie obiektów 
+        /* Musiałem to zrobić w taki sposób, bo jak się okazuje stosowanie obiektów
         razem z operatorami logicznymi wcale nie jest takie logiczne... */
         const gotBoardElement = Boolean(boardElement);
         const gotMarkedFigure = Boolean(this._markedFigure);
@@ -48,8 +51,8 @@ export default class GameCtrl {
         switch (true) {
 
             // Brak zaznaczenia / kliknięta figura
-            case (!gotMarkedFigure && gotBoardElement) : 
-                if (this._turn !== boardElement._side) return;
+            case (!gotMarkedFigure && gotBoardElement) :
+                if (this._turn !== boardElement._side || (this._isCheckmate === true && boardElement.name !== 'king')) return;
                 this._handleMark(boardElement);
             break;
 
@@ -67,11 +70,12 @@ export default class GameCtrl {
                 this._clearState();
         }
     }
-    
+
     _afterMoveOrAttack() {
         this._turn = (this._turn === 'white') ? 'black' : 'white';
         this._clearTimeIntervals();
         this._setTimeInterval(this._turn);
+        this._checkIfCheckmate();
     }
 
     _isEnemy(figure) {
@@ -123,14 +127,14 @@ export default class GameCtrl {
         });
 
         return moves.filter(el => {
-            return !(el[0] == kingPosition[0] && el[1] == kingPosition[1]); 
+            return !(el[0] == kingPosition[0] && el[1] == kingPosition[1]);
         })
     }
 
     /* Metody _handleMove i _handleAttack są praktycznie identyczne,
     jednak oddzielenie ich pozwala trochę lepiej zrozumieć kod,
     ponadto w przyszłości zaimplementowanie roszady lub sprawdzanie mata
-    bardziej pasuje do metody _handleMove i trochę je zróżnicuje */ 
+    bardziej pasuje do metody _handleMove i trochę je zróżnicuje */
 
     _handleMove(position) {
         const moves = this._getMoves(this._markedFigure);
@@ -163,7 +167,7 @@ export default class GameCtrl {
             attacks = this._markedFigure.findLegalAttacks(this._boardModel);
         } else {
             // Figury (bez piona) atakują te same pola po ktorych się poruszają
-            attacks = this._getMoves(this._markedFigure); 
+            attacks = this._getMoves(this._markedFigure);
         }
 
         // Nie bijemy króla
@@ -171,7 +175,7 @@ export default class GameCtrl {
 
         const attackIndex = attacks.findIndex(attack => attack.join() === position.join() );
 
-        if (attackIndex > -1) {     
+        if (attackIndex > -1) {
             console.log('BIJE!')
 
             const oldPosition = [this._markedFigure._x, this._markedFigure._y];
@@ -181,7 +185,7 @@ export default class GameCtrl {
 
             // Aktualizuje widok - przesyłamy _markedFigure, ponieważ posiada zaktualizowane _x oraz _y
             this._boardView.movePiece(oldPosition, this._markedFigure)
-            
+
             this._afterMoveOrAttack();
         }
 
@@ -217,14 +221,14 @@ export default class GameCtrl {
         clearInterval(this.timeBlackInterval);
         clearInterval(this.timeWhiteInterval);
     }
-    
+
     _endGame() {
         this._clearTimeIntervals();
     }
 
     init() {
         console.log('Inicjalizacja controllera...');
-        
+
         this._boardModel.init();
         this._boardView.init(this._boardModel);
         this._setListeners();
@@ -232,4 +236,4 @@ export default class GameCtrl {
 
         console.log(this._boardModel); // służy do podejrzenia tablicy w konsoli
     }
-} 
+}
