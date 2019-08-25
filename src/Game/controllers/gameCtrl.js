@@ -122,19 +122,17 @@ export default class GameCtrl {
     switch (true) {
       // Brak zaznaczenia / kliknięta figura
       case !gotMarkedFigure && gotBoardElement:
+        // Uproszczenie, ale trudno, nie ma czasu
+        if (this._check.isCheck && boardElement.name !== "king") return;
+
         if (this._turn !== boardElement._side) return;
         this._handleMark(boardElement);
         break;
 
-            // Brak zaznaczenia / kliknięta figura
-            case (!gotMarkedFigure && gotBoardElement) : 
-
-                // Uproszczenie, ale trudno, nie ma czasu
-                if (this._check.isCheck && boardElement.name !== 'king' ) return;
-
-                if (this._turn !== boardElement._side) return;
-                this._handleMark(boardElement);
-            break;
+      // Zaznaczona / kliknięta pusta
+      case gotMarkedFigure && !gotBoardElement:
+        this._handleMove(position);
+        break;
 
       // Zaznaczona / kliknięta figura przeciwnika
       case gotMarkedFigure && gotBoardElement && this._isEnemy(boardElement):
@@ -159,9 +157,10 @@ export default class GameCtrl {
     return this._markedFigure._side !== figure._side ? true : false;
   }
 
-    _getKingMoves(figure) {
-        const allLegalMoves = [];
-        const moves = figure.findLegalMoves(this._boardModel);
+  _getMoves(figure) {
+    const moves = figure.findLegalMoves(this._boardModel);
+    return moves;
+  }
 
   _getKingMoves(figure) {
     const allLegalMoves = [];
@@ -246,7 +245,6 @@ export default class GameCtrl {
     ponadto w przyszłości zaimplementowanie roszady */
 
   _handleMove(position) {
-    console.log(position);
     let moves;
 
     if (this._check.isCheck && this._markedFigure.name === "king") {
@@ -256,17 +254,13 @@ export default class GameCtrl {
     } else {
       moves = this._getMoves(this._markedFigure);
     }
-    console.log(moves);
 
     // Jeżeli kliknięte pole znajduje się w tabeli mozliwych ruchów to rusz, jak nie odznacz
     let moveIndex = moves.findIndex(move => move.join() === position.join());
 
     if (moveIndex > -1) {
-      // console.log('RUSZAM!')
-
       const oldPosition = [this._markedFigure._x, this._markedFigure._y];
 
-        if (moveIndex > -1) {
       // Aktualizuje model
       this._markedFigure.move(position, this._boardModel);
 
@@ -320,16 +314,14 @@ export default class GameCtrl {
       attacks = this._getMoves(this._markedFigure);
     }
 
-        } else if (this._markedFigure.name === 'king') {
-            attacks = this._getKingMoves(this._markedFigure);
+    // Nie bijemy króla
+    attacks = this._filterEnemyKingPosition(attacks);
 
     const attackIndex = attacks.findIndex(
       attack => attack.join() === position.join()
     );
 
     if (attackIndex > -1) {
-      // console.log('BIJE!')
-
       const oldPosition = [this._markedFigure._x, this._markedFigure._y];
 
       // Aktualizuje model
@@ -375,37 +367,37 @@ export default class GameCtrl {
     clearInterval(this.timeWhiteInterval);
   }
 
-    _clearTimeIntervals() {
-        clearInterval(this.timeBlackInterval);
-        clearInterval(this.timeWhiteInterval);
-    }
-    
-    _endGame(winnerSide) {
-        this._clearTimeIntervals();
-        this._play = false;
+  _clearTimeIntervals() {
+    clearInterval(this.timeBlackInterval);
+    clearInterval(this.timeWhiteInterval);
+  }
 
-        // wyświetlanie okna informującego o zwycięstwie jednej ze stron
+  _endGame(winnerSide) {
+    this._clearTimeIntervals();
+    this._play = false;
 
-        var endGameMsg = document.createElement('div');
-        var wrapContainer = document.querySelector('.wrap');
-        var msgContent = `Gratulacje!
-            Wygrywają  ${(winnerSide === 'white') ? 'białe' : 'czarne'}`;
-        var txtNode = document.createTextNode(msgContent);
-        var divBefore = document.getElementById("before");
+    // wyświetlanie okna informującego o zwycięstwie jednej ze stron
 
-        endGameMsg.appendChild(txtNode);
-        wrapContainer.insertBefore(endGameMsg, divBefore);
+    var endGameMsg = document.createElement("div");
+    var wrapContainer = document.querySelector(".wrap");
+    var msgContent = `Gratulacje!
+            Wygrywają  ${winnerSide === "white" ? "białe" : "czarne"}`;
+    var txtNode = document.createTextNode(msgContent);
+    var divBefore = document.getElementById("before");
 
-        endGameMsg.style.zIndex = '2';
-        endGameMsg.style.fontFamily = 'Lexend Peta';
-        endGameMsg.style.fontSize = '1.7rem';
-        endGameMsg.style.position = 'absolute'; 
-        endGameMsg.style.color = 'rgb(202, 190, 190)';
-        endGameMsg.style.backgroundColor = 'rgba(0, 0, 0, 0.671)';
-        endGameMsg.style.padding = '20px';
-        endGameMsg.style.textJustify = 'center';
-        console.log(endGameMsg);
-    }
+    endGameMsg.appendChild(txtNode);
+    wrapContainer.insertBefore(endGameMsg, divBefore);
+
+    endGameMsg.style.zIndex = "2";
+    endGameMsg.style.fontFamily = "Lexend Peta";
+    endGameMsg.style.fontSize = "1.7rem";
+    endGameMsg.style.position = "absolute";
+    endGameMsg.style.color = "rgb(202, 190, 190)";
+    endGameMsg.style.backgroundColor = "rgba(0, 0, 0, 0.671)";
+    endGameMsg.style.padding = "20px";
+    endGameMsg.style.textJustify = "center";
+    console.log(endGameMsg);
+  }
 
   init() {
     console.log("Inicjalizacja controllera...");
