@@ -126,10 +126,15 @@ export default class GameCtrl {
         this._handleMark(boardElement);
         break;
 
-      // Zaznaczona / kliknięta pusta
-      case gotMarkedFigure && !gotBoardElement:
-        this._handleMove(position);
-        break;
+            // Brak zaznaczenia / kliknięta figura
+            case (!gotMarkedFigure && gotBoardElement) : 
+
+                // Uproszczenie, ale trudno, nie ma czasu
+                if (this._check.isCheck && boardElement.name !== 'king' ) return;
+
+                if (this._turn !== boardElement._side) return;
+                this._handleMark(boardElement);
+            break;
 
       // Zaznaczona / kliknięta figura przeciwnika
       case gotMarkedFigure && gotBoardElement && this._isEnemy(boardElement):
@@ -154,14 +159,9 @@ export default class GameCtrl {
     return this._markedFigure._side !== figure._side ? true : false;
   }
 
-  _getMoves(figure) {
-    const moves = figure.findLegalMoves(this._boardModel);
-    return moves;
-  }
-
-  _getKingAttack(figure) {
-    return figure.findLegalAttacks(this._boardModel);
-  }
+    _getKingMoves(figure) {
+        const allLegalMoves = [];
+        const moves = figure.findLegalMoves(this._boardModel);
 
   _getKingMoves(figure) {
     const allLegalMoves = [];
@@ -266,6 +266,7 @@ export default class GameCtrl {
 
       const oldPosition = [this._markedFigure._x, this._markedFigure._y];
 
+        if (moveIndex > -1) {
       // Aktualizuje model
       this._markedFigure.move(position, this._boardModel);
 
@@ -319,8 +320,8 @@ export default class GameCtrl {
       attacks = this._getMoves(this._markedFigure);
     }
 
-    // Nie bijemy króla
-    attacks = this._filterEnemyKingPosition(attacks);
+        } else if (this._markedFigure.name === 'king') {
+            attacks = this._getKingMoves(this._markedFigure);
 
     const attackIndex = attacks.findIndex(
       attack => attack.join() === position.join()
@@ -374,13 +375,37 @@ export default class GameCtrl {
     clearInterval(this.timeWhiteInterval);
   }
 
-  _endGame(winnerSide) {
-    this._clearTimeIntervals();
-    this._play = false;
-    window.alert(
-      `Gratulacje wygrywają  ${winnerSide === "white" ? "białe" : "czarne"}`
-    );
-  }
+    _clearTimeIntervals() {
+        clearInterval(this.timeBlackInterval);
+        clearInterval(this.timeWhiteInterval);
+    }
+    
+    _endGame(winnerSide) {
+        this._clearTimeIntervals();
+        this._play = false;
+
+        // wyświetlanie okna informującego o zwycięstwie jednej ze stron
+
+        var endGameMsg = document.createElement('div');
+        var wrapContainer = document.querySelector('.wrap');
+        var msgContent = `Gratulacje!
+            Wygrywają  ${(winnerSide === 'white') ? 'białe' : 'czarne'}`;
+        var txtNode = document.createTextNode(msgContent);
+        var divBefore = document.getElementById("before");
+
+        endGameMsg.appendChild(txtNode);
+        wrapContainer.insertBefore(endGameMsg, divBefore);
+
+        endGameMsg.style.zIndex = '2';
+        endGameMsg.style.fontFamily = 'Lexend Peta';
+        endGameMsg.style.fontSize = '1.7rem';
+        endGameMsg.style.position = 'absolute'; 
+        endGameMsg.style.color = 'rgb(202, 190, 190)';
+        endGameMsg.style.backgroundColor = 'rgba(0, 0, 0, 0.671)';
+        endGameMsg.style.padding = '20px';
+        endGameMsg.style.textJustify = 'center';
+        console.log(endGameMsg);
+    }
 
   init() {
     console.log("Inicjalizacja controllera...");
