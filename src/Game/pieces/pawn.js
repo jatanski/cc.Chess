@@ -80,7 +80,7 @@ class Pawn extends Piece {
       return !(el[0] < 0 || el[0] > 7 || el[1] < 0 || el[1] > 7);
     });
 
-    legalAttacks = this._showAttackOnlyIfPossible(legalAttacks, board);
+    // legalAttacks = this._showAttackOnlyIfPossible(legalAttacks, board);
 
     return legalAttacks;
   }
