@@ -59,7 +59,6 @@ export default class BoardView {
     }
 
     markCheck(position) {
-        console.log(position)
         this._boardElement
             .querySelector(`[data-id="${position[0]}-${position[1]}"]`)
             .classList.add('checkmate');
