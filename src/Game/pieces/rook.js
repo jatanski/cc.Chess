@@ -54,8 +54,7 @@ class Rook extends Piece {
             } else break;
         }
 
-            console.log(allMoves)
-            return allMoves;
+        return allMoves;
     };
     
 

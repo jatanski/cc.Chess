@@ -6,6 +6,8 @@ export default class GameCtrl {
         this._boardView = new BoardView(this._boardContainer);
         this._markedFigure = null;
         this._turn = 'white';
+        this._check = {};
+        this._play = true;
     }
 
     _setListeners() {
@@ -19,22 +21,95 @@ export default class GameCtrl {
                 });
 
             this._controllClick(squarePosition);
-            this._checkIfCheckmate();
         });
     }
 
-    _checkIfCheckmate() {
-        let king = null;
-        this._boardContainer.childNodes.forEach(e => e.classList.remove('checkmate'));
-        this._boardModel.forEach(a => a.forEach(e => {if(e !== null && e.name === 'king' && e._side !== this._turn)king = e}));
-        this._boardModel.forEach(a => a.forEach(e => {if(e !== null && e._side === this._turn)this._getMoves(e)
-            .forEach(m => {if( m[0]=== king._x && m[1] === king._y){
-                this._boardContainer.children[e._x*8+e._y].classList.add('checkmate');
-                this._boardContainer.children[king._x*8+king._y].classList.add('checkmate');
-            }})}));
+    _checkIfCheck() {
+        let enemyKingPosition;
+        const allYourPossibleMoves = [];
+
+        this._boardModel.forEach(row => {
+            row.forEach(figure => {
+                if (figure == null) return 
+
+                // Znajdź przeciwnego króla
+                if (figure.name === 'king' && figure._side !== this._turn) {
+                    enemyKingPosition = [figure._x, figure._y];
+                }
+
+                // Sprawdź wszystkie możliwe ataki wszystkich figur gracza, który własnie wykonał ruch
+                if (figure._side === this._turn) {
+                    if(figure.name === 'pawn') {
+                        // Pion jest tak napisany, że sprawdza w klasie czy atak jest możliwy,
+                        // dlatego _getAttacks zwróci wartość tylko w momencie gdy obok piona cos stoi
+                        allYourPossibleMoves.push(...this._getAttacks(figure))
+                    } else {
+                        allYourPossibleMoves.push(...this._getMoves(figure))
+                    }
+                }
+            })
+        })
+
+        // Po każdym ruchu sprawdzamy czy pozycja przeciwnego króla znajduje się w możliwych kolejnej tury
+        const isKingInDanger = positions => positions.join() === enemyKingPosition.join();
+        if (allYourPossibleMoves.some(isKingInDanger)) {
+            this._check.isCheck = true;
+            this._check.onKingPosition = enemyKingPosition;
+            this._boardView.markCheck(enemyKingPosition);
+        } else {
+            this._check = {}
+            this._boardView.removeCheck();
+        };
+
+        return this._check.isCheck;
+    }
+
+    _findAllEnemyPossibleAttacks() {
+        const allPossibleAttacks = [];
+        this._boardModel.forEach(row => {
+            row.forEach(figure => {
+                if (figure == null) return 
+
+                // Sprawdź wszystkie możliwe ataki przeciwnika
+                if (figure._side !== this._turn) {
+                    if(figure.name === 'pawn') {
+                        // Pion jest tak napisany, że sprawdza w klasie czy atak jest możliwy,
+                        // dlatego _getAttacks zwróci wartość tylko w momencie gdy obok piona cos stoi
+                        allPossibleAttacks.push(...this._getAttacks(figure))
+                    } else {
+                        allPossibleAttacks.push(...this._getMoves(figure))
+                    }
+                }
+            })
+        })
+        return allPossibleAttacks;
+    }
+    
+    _findKingMovesWhenCheck() {
+        const legalMoves = [];
+        const king = this._boardModel[this._check.onKingPosition[0]][this._check.onKingPosition[1]];
+        const enemyAttacks = this._findAllEnemyPossibleAttacks();
+        const kingMoves = this._getMoves(king);
+
+        kingMoves.forEach(position => {
+            const samePosition = enemyAttacks.some(attackPosition => {
+                return attackPosition.join() === position.join();;
+            })
+            if(samePosition) return
+            legalMoves.push(position);
+        });
+
+        if (legalMoves.length < 1) {
+            const who = (this._turn === 'white') ? 'black' : 'white';
+            this._endGame(who);
+        }
+        return legalMoves;
     }
 
     _controllClick(position) {
+        // Nie rób nic, jeżeli koniec gry
+        if(!this._play) return;
+
         const x = position[0];
         const y = position[1];
 
@@ -69,9 +144,12 @@ export default class GameCtrl {
     }
     
     _afterMoveOrAttack() {
+        this._checkIfCheck();
         this._turn = (this._turn === 'white') ? 'black' : 'white';
         this._clearTimeIntervals();
         this._setTimeInterval(this._turn);
+
+        if (this._check.isCheck) this._findKingMovesWhenCheck();
     }
 
     _isEnemy(figure) {
@@ -79,10 +157,30 @@ export default class GameCtrl {
     }
 
     _getMoves(figure) {
-        return figure.findLegalMoves(this._boardModel);
+        const moves = figure.findLegalMoves(this._boardModel);
+        return moves;
     }
 
-    _getAtacks(figure) {
+    _getKingMoves(figure) {
+        const allLegalMoves = [];
+        const moves = figure.findLegalMoves(this._boardModel);
+
+        if(moves.length < 1) return;
+
+        const allEnemyAttacks = this._findAllEnemyPossibleAttacks();
+
+        moves.forEach(position => {
+            const samePosition = allEnemyAttacks.some(enemyAttackPos => {
+                return enemyAttackPos.join() === position.join();;
+            })
+            if(samePosition) return
+            allLegalMoves.push(position);
+        });
+
+        return allLegalMoves;
+    }
+
+    _getAttacks(figure) {
         return figure.findLegalAttacks(this._boardModel);
     }
 
@@ -94,13 +192,21 @@ export default class GameCtrl {
     }
 
     _displayMoves(figure) {
-        const moves = this._getMoves(figure);
+        let moves;
+
+        if(this._check.isCheck && figure.name === 'king') {
+            moves = this._findKingMovesWhenCheck();
+        } else if (figure.name === 'king') {
+            moves = this._getKingMoves(figure);
+        } else {
+            moves = this._getMoves(figure);
+        }
 
         this._boardView.highlightSquares(moves);
         this._boardView.markSquare([figure._x, figure._y]);
 
         if (figure.name === 'pawn') {
-            const attacks = this._getAtacks(figure);
+            const attacks = this._getAttacks(figure);
             this._boardView.highlightAttacks(attacks);
         }
     }
@@ -129,17 +235,26 @@ export default class GameCtrl {
 
     /* Metody _handleMove i _handleAttack są praktycznie identyczne,
     jednak oddzielenie ich pozwala trochę lepiej zrozumieć kod,
-    ponadto w przyszłości zaimplementowanie roszady lub sprawdzanie mata
-    bardziej pasuje do metody _handleMove i trochę je zróżnicuje */ 
+    ponadto w przyszłości zaimplementowanie roszady */ 
 
     _handleMove(position) {
-        const moves = this._getMoves(this._markedFigure);
+        let moves;
+
+        if (this._check.isCheck && this._markedFigure.name === 'king') {
+            moves = this._findKingMovesWhenCheck();
+
+        } else if (this._markedFigure.name === 'king') {
+            moves = this._getKingMoves(this._markedFigure);
+
+        } else {
+            moves = this._getMoves(this._markedFigure);
+        }
 
         // Jeżeli kliknięte pole znajduje się w tabeli mozliwych ruchów to rusz, jak nie odznacz
         const moveIndex = moves.findIndex(move => move.join() === position.join() );
 
         if (moveIndex > -1) {
-            console.log('RUSZAM!')
+            // console.log('RUSZAM!')
 
             const oldPosition = [this._markedFigure._x, this._markedFigure._y];
 
@@ -157,6 +272,7 @@ export default class GameCtrl {
     }
 
     _handleAttack(position) {
+
         let attacks;
 
         if (this._markedFigure.name === 'pawn') {
@@ -172,7 +288,7 @@ export default class GameCtrl {
         const attackIndex = attacks.findIndex(attack => attack.join() === position.join() );
 
         if (attackIndex > -1) {     
-            console.log('BIJE!')
+            // console.log('BIJE!')
 
             const oldPosition = [this._markedFigure._x, this._markedFigure._y];
 
@@ -201,13 +317,13 @@ export default class GameCtrl {
         if (side === 'white') {
             this.timeWhiteInterval = setInterval(() => {
                 this.timeWhite--;
-                if(this.timeWhite < 0) return this._endGame();
+                if(this.timeWhite < 0) return this._endGame('black');
                 this._boardView.updateTime(this._boardView.timerWhite, this.timeWhite);
             }, 1000)
         } else {
             this.timeBlackInterval = setInterval(() => {
                 this.timeBlack--;
-                if(this.timeBlack < 0) return this._endGame();
+                if(this.timeBlack < 0) return this._endGame('white');
                 this._boardView.updateTime(this._boardView.timerBlack, this.timeBlack);
             }, 1000)
         }
@@ -218,8 +334,10 @@ export default class GameCtrl {
         clearInterval(this.timeWhiteInterval);
     }
     
-    _endGame() {
+    _endGame(winnerSide) {
         this._clearTimeIntervals();
+        this._play = false;
+        window.alert(`Gratulacje wygrywają  ${(winnerSide === 'white') ? 'białe' : 'czarne'}`);
     }
 
     init() {
@@ -228,7 +346,7 @@ export default class GameCtrl {
         this._boardModel.init();
         this._boardView.init(this._boardModel);
         this._setListeners();
-        this._initTimers(5);
+        this._initTimers(2);
 
         console.log(this._boardModel); // służy do podejrzenia tablicy w konsoli
     }
