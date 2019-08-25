@@ -122,6 +122,10 @@ export default class GameCtrl {
 
             // Brak zaznaczenia / kliknięta figura
             case (!gotMarkedFigure && gotBoardElement) : 
+
+                // Uproszczenie, ale trudno, nie ma czasu
+                if (this._check.isCheck && boardElement.name !== 'king' ) return;
+
                 if (this._turn !== boardElement._side) return;
                 this._handleMark(boardElement);
             break;
@@ -157,10 +161,6 @@ export default class GameCtrl {
     _getMoves(figure) {
         const moves = figure.findLegalMoves(this._boardModel);
         return moves;
-    }
-
-    _getKingAttack(figure) {
-        return figure.findLegalAttacks(this._boardModel);
     }
 
     _getKingMoves(figure) {
@@ -257,7 +257,6 @@ export default class GameCtrl {
         const moveIndex = moves.findIndex(move => move.join() === position.join() );
 
         if (moveIndex > -1) {
-            // console.log('RUSZAM!')
 
             const oldPosition = [this._markedFigure._x, this._markedFigure._y];
 
@@ -282,7 +281,7 @@ export default class GameCtrl {
             attacks = this._markedFigure.findLegalAttacks(this._boardModel);
 
         } else if (this._markedFigure.name === 'king') {
-            attacks = this._getMoves(this._markedFigure);
+            attacks = this._getKingMoves(this._markedFigure);
 
         } else {
             // Figury (bez piona) atakują te same pola po ktorych się poruszają
@@ -295,7 +294,6 @@ export default class GameCtrl {
         const attackIndex = attacks.findIndex(attack => attack.join() === position.join() );
 
         if (attackIndex > -1) {     
-            // console.log('BIJE!')
 
             const oldPosition = [this._markedFigure._x, this._markedFigure._y];
 
