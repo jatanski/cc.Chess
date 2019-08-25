@@ -73,8 +73,6 @@ export default class GameCtrl {
                 // Sprawdź wszystkie możliwe ataki przeciwnika
                 if (figure._side !== this._turn) {
                     if(figure.name === 'pawn') {
-                        // Pion jest tak napisany, że sprawdza w klasie czy atak jest możliwy,
-                        // dlatego _getAttacks zwróci wartość tylko w momencie gdy obok piona cos stoi
                         allPossibleAttacks.push(...this._getAttacks(figure))
                     } else {
                         allPossibleAttacks.push(...this._getMoves(figure))
@@ -84,7 +82,7 @@ export default class GameCtrl {
         })
         return allPossibleAttacks;
     }
-    
+
     _findKingMovesWhenCheck() {
         const legalMoves = [];
         const king = this._boardModel[this._check.onKingPosition[0]][this._check.onKingPosition[1]];
@@ -161,6 +159,10 @@ export default class GameCtrl {
         return moves;
     }
 
+    _getKingAttack(figure) {
+        return figure.findLegalAttacks(this._boardModel);
+    }
+
     _getKingMoves(figure) {
         const allLegalMoves = [];
         const moves = figure.findLegalMoves(this._boardModel);
@@ -206,7 +208,8 @@ export default class GameCtrl {
         this._boardView.markSquare([figure._x, figure._y]);
 
         if (figure.name === 'pawn') {
-            const attacks = this._getAttacks(figure);
+            let attacks = this._getAttacks(figure);
+            attacks = figure._showAttackOnlyIfPossible(attacks, this._boardModel);
             this._boardView.highlightAttacks(attacks);
         }
     }
@@ -277,6 +280,10 @@ export default class GameCtrl {
 
         if (this._markedFigure.name === 'pawn') {
             attacks = this._markedFigure.findLegalAttacks(this._boardModel);
+
+        } else if (this._markedFigure.name === 'king') {
+            attacks = this._getMoves(this._markedFigure);
+
         } else {
             // Figury (bez piona) atakują te same pola po ktorych się poruszają
             attacks = this._getMoves(this._markedFigure); 
