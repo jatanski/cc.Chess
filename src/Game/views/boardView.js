@@ -50,6 +50,7 @@ export default class BoardView {
     }
 
     highlightSquares(squares) {
+        if(!squares) return;
         squares.forEach(position => {
             this._boardElement
                 .querySelector(`[data-id="${position[0]}-${position[1]}"]`)
@@ -57,9 +58,20 @@ export default class BoardView {
         });
     }
 
+    markCheck(position) {
+        console.log(position)
+        this._boardElement
+            .querySelector(`[data-id="${position[0]}-${position[1]}"]`)
+            .classList.add('checkmate');
+    }
+
+    removeCheck() {
+        const markedCheck = this._boardElement.querySelector('.checkmate') || null;
+        if (markedCheck) markedCheck.classList.remove('checkmate');
+    }
+
     highlightAttacks(squares) {
         if(!squares) return;
-
         squares.forEach(position => {
             this._boardElement
                 .querySelector(`[data-id="${position[0]}-${position[1]}"]`)
@@ -70,7 +82,7 @@ export default class BoardView {
     // Mark to pole na którym stoi zaznaczona bierka
     removeMark() {
         const marked = this._boardElement.querySelector('.marked') || null;
-        if (marked) marked.classList.remove("marked");
+        if (marked) marked.classList.remove('marked');
     }
 
     // Highlight to pola po których możemy skakać/bić
@@ -100,7 +112,7 @@ export default class BoardView {
         let seconds = timeInSeconds - (minutes * 60);
 
         if(timeInSeconds === 0) {
-            element.innerHTML = `WYGRYWA`;
+            element.innerHTML = `PRZEGRYWA`;
         } else {
             if(seconds < 10) seconds = '0' + seconds;
             element.innerHTML = `${minutes}:${seconds}`; 
